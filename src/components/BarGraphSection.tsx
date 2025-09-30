@@ -49,7 +49,7 @@ const BarGraphSection = () => {
       <div className="flex flex-col h-full">
         {/* Title */}
         <div className="mb-4">
-          <h3 className="text-foreground text-lg font-semibold">Activity Comparison</h3>
+          <h3 className="text-foreground text-lg font-semibold">Members vs Unique Authors</h3>
           <p className="text-muted-foreground text-xs mt-1">Current vs Previous Refresh</p>
         </div>
 
