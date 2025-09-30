@@ -1,8 +1,15 @@
 import { useMemo, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
+import { Users, UserCheck } from 'lucide-react';
 
 const BarGraphSection = () => {
   const [hoveredBar, setHoveredBar] = useState<any>(null);
+
+  // Metrics data
+  const memberCount = 1247;
+  const memberChangePercent = 12.5;
+  const uniqueAuthorsCount = 89;
+  const uniqueAuthorsChangePercent = -3.2;
 
   const chartData = useMemo(() => {
     const timeLabels = ['9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30'];
@@ -48,7 +55,7 @@ const BarGraphSection = () => {
     >
       <div className="flex flex-col h-full">
         {/* Title */}
-        <div className="mb-4">
+        <div className="mb-3">
           <h3 className="text-foreground text-lg font-semibold">Members vs Unique Authors</h3>
           <p className="text-muted-foreground text-xs mt-1">Current vs Previous Refresh</p>
         </div>
@@ -105,15 +112,46 @@ const BarGraphSection = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Legend */}
-        <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-[hsl(var(--dashboard-border))]">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ background: '#3498DB' }} />
-            <span className="text-xs text-muted-foreground">Current Refresh</span>
+        {/* Bottom Metrics Section */}
+        <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-[hsl(var(--dashboard-border))]">
+          {/* Members */}
+          <div className="flex items-center gap-3">
+            <Users className="w-5 h-5 text-muted-foreground" />
+            <div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-xl font-bold text-foreground">
+                  {memberCount.toLocaleString()}
+                </span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Members
+                </span>
+              </div>
+              <div 
+                className={`text-sm font-semibold ${memberChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
+              >
+                {memberChangePercent > 0 ? '+' : ''}{memberChangePercent}%
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ background: '#5D6D7E', opacity: 0.5 }} />
-            <span className="text-xs text-muted-foreground">Previous Refresh</span>
+
+          {/* Unique Authors */}
+          <div className="flex items-center gap-3">
+            <UserCheck className="w-5 h-5 text-muted-foreground" />
+            <div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-xl font-bold text-foreground">
+                  {uniqueAuthorsCount.toLocaleString()}
+                </span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Unique Authors
+                </span>
+              </div>
+              <div 
+                className={`text-sm font-semibold ${uniqueAuthorsChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
+              >
+                {uniqueAuthorsChangePercent > 0 ? '+' : ''}{uniqueAuthorsChangePercent}%
+              </div>
+            </div>
           </div>
         </div>
       </div>
