@@ -32,17 +32,11 @@ const MetricCard = ({ type, value, percentChange, chartColor }: MetricCardProps)
 
   return (
     <div 
-      className="border rounded-2xl p-5 h-full transition-all duration-300"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full transition-all duration-300 hover:scale-[1.02]"
       style={{
         background: isHovered 
           ? 'linear-gradient(180deg, #151515 0%, #181818 100%)'
-          : 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)',
-        borderColor: isHovered 
-          ? 'hsl(var(--dashboard-border) / 0.6)' 
-          : 'hsl(var(--dashboard-border))',
-        boxShadow: isHovered
-          ? '0 2px 12px rgba(255, 255, 255, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-          : 'none'
+          : 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
