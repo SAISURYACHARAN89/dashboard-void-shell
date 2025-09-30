@@ -13,7 +13,7 @@ const Index = () => {
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
           {/* TradingView Chart - Left side, tall card */}
-          <div className="lg:row-span-3 h-[600px] lg:h-full">
+          <div className="lg:row-span-3 h-[600px]">
             <TradingViewCard />
           </div>
           
