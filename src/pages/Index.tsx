@@ -29,7 +29,7 @@ const Index = () => {
             </div>
 
             {/* Views & Likes Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-[216px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-[204px]">
               <MetricCard 
                 type="views"
                 value={240}
