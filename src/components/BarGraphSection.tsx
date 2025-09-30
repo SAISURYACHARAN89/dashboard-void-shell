@@ -65,7 +65,7 @@ const BarGraphSection = () => {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart 
               data={chartData}
-              margin={{ top: 10, right: 25, bottom: 15, left: 25 }}
+              margin={{ top: 30, right: 25, bottom: 15, left: 25 }}
               barGap={-10}
             >
               <XAxis 
