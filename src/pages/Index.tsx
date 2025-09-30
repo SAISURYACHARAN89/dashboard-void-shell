@@ -1,6 +1,7 @@
 import TradingViewCard from '@/components/TradingViewCard';
 import HoldersGraphCard from '@/components/HoldersGraphCard';
 import BuysVsSellsCard from '@/components/BuysVsSellsCard';
+import WalletAgePlanetMapCard from '@/components/WalletAgePlanetMapCard';
 
 const Index = () => {
   return (
@@ -26,6 +27,11 @@ const Index = () => {
             {/* Buys vs Sells Card */}
             <div className="flex-1">
               <BuysVsSellsCard />
+            </div>
+
+            {/* Wallet Age Planet Map */}
+            <div className="flex-1">
+              <WalletAgePlanetMapCard />
             </div>
           </div>
         </div>
