@@ -78,16 +78,16 @@ const ScatterPlotCard = () => {
     >
       <div className="flex flex-col h-full">
         {/* Title */}
-        <div className="mb-3">
-          <h3 className="text-foreground text-lg font-semibold">Follower Concentration</h3>
-          <p className="text-muted-foreground text-xs mt-1">Author distribution by follower count</p>
+        <div className="mb-2">
+          <h3 className="text-foreground text-base font-semibold">Follower Concentration</h3>
+          <p className="text-muted-foreground text-xs mt-0.5">Author distribution by follower count</p>
         </div>
 
         {/* Scatter Plot */}
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 -mx-2">
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart
-              margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+              margin={{ top: 10, right: 25, bottom: 15, left: 25 }}
             >
               <XAxis 
                 dataKey="time"
@@ -136,7 +136,7 @@ const ScatterPlotCard = () => {
         </div>
 
         {/* Bottom Metrics Section */}
-        <div className="flex items-center justify-between gap-4 mt-4 pt-4 border-t border-[hsl(var(--dashboard-border))]">
+        <div className="flex items-center justify-between gap-3 mt-2 pt-3 border-t border-[hsl(var(--dashboard-border))]">
           {/* Mini (<1k) */}
           <div className="flex items-center gap-2">
             <Users2 className="w-4 h-4 text-muted-foreground" />
