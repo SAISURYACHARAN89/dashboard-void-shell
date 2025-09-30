@@ -18,6 +18,24 @@ const ScatterPlotCard = () => {
   const macroCount = 45; // 10k-100k followers
   const largeCount = 12; // >100k followers
 
+  const getFollowerType = (followers: number): string => {
+    if (followers < 1000) return 'mini';
+    if (followers < 10000) return 'micro';
+    if (followers < 100000) return 'macro';
+    return 'large';
+  };
+
+  const getColorByType = (followers: number): string => {
+    const type = getFollowerType(followers);
+    switch (type) {
+      case 'mini': return '#8B5CF6'; // Purple
+      case 'micro': return '#3B82F6'; // Blue
+      case 'macro': return '#10B981'; // Green
+      case 'large': return '#F59E0B'; // Amber
+      default: return '#00FFFF';
+    }
+  };
+
   const scatterData = useMemo(() => {
     const data: DataPoint[] = [];
     const times = ['9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30', '10:45'];
@@ -121,9 +139,9 @@ const ScatterPlotCard = () => {
                 {scatterData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill="#00FFFF"
-                    opacity={0.7}
-                    r={hoveredPoint === entry ? 6 : 2}
+                    fill={getColorByType(entry.followers)}
+                    opacity={0.8}
+                    r={hoveredPoint === entry ? 3 : 1.5}
                     style={{ 
                       transition: 'all 0.2s ease',
                       cursor: 'pointer'
