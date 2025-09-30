@@ -34,7 +34,7 @@ const BuysVsSellsCard = () => {
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
-      <div className="flex items-center gap-5 h-full">
+      <div className="flex items-center gap-5 h-full pl-2">
         {/* Left side - Stat boxes */}
         <div className="flex flex-col justify-center gap-3 min-w-[140px]">
           {/* Buys Box */}
