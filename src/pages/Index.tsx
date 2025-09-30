@@ -2,6 +2,7 @@ import TradingViewCard from '@/components/TradingViewCard';
 import HoldersGraphCard from '@/components/HoldersGraphCard';
 import BuysVsSellsCard from '@/components/BuysVsSellsCard';
 import WalletAgePlanetMapCard from '@/components/WalletAgePlanetMapCard';
+import HorizontalMetricsBar from '@/components/HorizontalMetricsBar';
 
 const Index = () => {
   return (
@@ -12,9 +13,17 @@ const Index = () => {
       >
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-          {/* TradingView Chart - Left side, tall card */}
-          <div className="h-[600px] lg:h-[484px]">
-            <TradingViewCard />
+          {/* Left Column */}
+          <div className="flex flex-col gap-6">
+            {/* TradingView Chart */}
+            <div className="h-[600px] lg:h-[484px]">
+              <TradingViewCard />
+            </div>
+            
+            {/* Horizontal Metrics Bar */}
+            <div className="h-[80px]">
+              <HorizontalMetricsBar />
+            </div>
           </div>
           
           {/* Right side - Stacked cards */}
