@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Users2, Users, UserPlus, Crown } from 'lucide-react';
 
 interface DataPoint {
   time: string;
@@ -10,6 +11,16 @@ interface DataPoint {
 
 const ScatterPlotCard = () => {
   const [hoveredPoint, setHoveredPoint] = useState<DataPoint | null>(null);
+
+  // Follower segment counts
+  const miniCount = 324; // <1k followers
+  const miniChangePercent = 8.3;
+  const microCount = 127; // 1k-10k followers  
+  const microChangePercent = -2.1;
+  const macroCount = 45; // 10k-100k followers
+  const macroChangePercent = 15.7;
+  const largeCount = 12; // >100k followers
+  const largeChangePercent = 25.0;
 
   const scatterData = useMemo(() => {
     const data: DataPoint[] = [];
@@ -71,7 +82,7 @@ const ScatterPlotCard = () => {
     >
       <div className="flex flex-col h-full">
         {/* Title */}
-        <div className="mb-4">
+        <div className="mb-3">
           <h3 className="text-foreground text-lg font-semibold">Follower Concentration</h3>
           <p className="text-muted-foreground text-xs mt-1">Author distribution by follower count</p>
         </div>
@@ -128,11 +139,86 @@ const ScatterPlotCard = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Info */}
-        <div className="flex items-center justify-center mt-4 pt-4 border-t border-[hsl(var(--dashboard-border))]">
+        {/* Bottom Metrics Section */}
+        <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-[hsl(var(--dashboard-border))]">
+          {/* Mini (<1k) */}
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full" style={{ background: '#00FFFF' }} />
-            <span className="text-xs text-muted-foreground">Each dot represents an author tweet</span>
+            <Users2 className="w-4 h-4 text-muted-foreground" />
+            <div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-lg font-bold text-foreground">
+                  {miniCount}
+                </span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Mini
+                </span>
+              </div>
+              <div 
+                className={`text-xs font-semibold ${miniChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
+              >
+                {miniChangePercent > 0 ? '+' : ''}{miniChangePercent}%
+              </div>
+            </div>
+          </div>
+
+          {/* Micro (1k-10k) */}
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-muted-foreground" />
+            <div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-lg font-bold text-foreground">
+                  {microCount}
+                </span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Micro
+                </span>
+              </div>
+              <div 
+                className={`text-xs font-semibold ${microChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
+              >
+                {microChangePercent > 0 ? '+' : ''}{microChangePercent}%
+              </div>
+            </div>
+          </div>
+
+          {/* Macro (10k-100k) */}
+          <div className="flex items-center gap-2">
+            <UserPlus className="w-4 h-4 text-muted-foreground" />
+            <div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-lg font-bold text-foreground">
+                  {macroCount}
+                </span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Macro
+                </span>
+              </div>
+              <div 
+                className={`text-xs font-semibold ${macroChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
+              >
+                {macroChangePercent > 0 ? '+' : ''}{macroChangePercent}%
+              </div>
+            </div>
+          </div>
+
+          {/* Large (>100k) */}
+          <div className="flex items-center gap-2">
+            <Crown className="w-4 h-4 text-muted-foreground" />
+            <div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-lg font-bold text-foreground">
+                  {largeCount}
+                </span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  Large
+                </span>
+              </div>
+              <div 
+                className={`text-xs font-semibold ${largeChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
+              >
+                {largeChangePercent > 0 ? '+' : ''}{largeChangePercent}%
+              </div>
+            </div>
           </div>
         </div>
       </div>
