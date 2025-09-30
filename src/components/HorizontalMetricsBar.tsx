@@ -37,11 +37,9 @@ const HorizontalMetricsBar = () => {
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-xl py-3 px-4 relative transition-all duration-300 hover:border-[hsl(var(--dashboard-border))]/60 hover:shadow-lg"
+      className="border border-[hsl(var(--dashboard-border))] rounded-lg py-3 px-4 relative"
       style={{
-        background: 'linear-gradient(135deg, rgba(13, 13, 13, 0.8) 0%, rgba(18, 18, 18, 0.9) 100%)',
-        backdropFilter: 'blur(10px)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03)'
+        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-0 relative">

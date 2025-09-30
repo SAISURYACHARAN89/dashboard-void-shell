@@ -30,23 +30,16 @@ const TradingViewCard = () => {
   const timeframes: Timeframe[] = ['1M', '5M', '15M', '30M'];
 
   return (
-    <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-xl p-6 flex flex-col h-full transition-all duration-300 hover:border-[hsl(var(--dashboard-border))]/60 hover:shadow-lg group"
-      style={{
-        background: 'linear-gradient(135deg, rgba(13, 13, 13, 0.8) 0%, rgba(18, 18, 18, 0.9) 100%)',
-        backdropFilter: 'blur(10px)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03)'
-      }}
-    >
+    <div className="bg-[#111111] border border-[hsl(var(--dashboard-border))] rounded-2xl p-6 flex flex-col h-full">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h2 className="text-foreground font-bold text-xl tracking-tight">MBA$ • MC 35.7k</h2>
-          <p className="text-muted-foreground text-xs mt-1 font-medium">Live Price Chart</p>
+          <h2 className="text-foreground font-semibold text-lg">MBA$ • MC 35.7k</h2>
+          <p className="text-muted-foreground text-sm mt-1">Live Price Chart</p>
         </div>
         
         {/* Timeframe Toggle - Desktop */}
-        <div className="hidden md:flex gap-1 bg-[#0A0A0A] rounded-lg p-1 border border-[hsl(var(--dashboard-border))]">
+        <div className="hidden md:flex gap-1 bg-[#0A0A0A] rounded-lg p-1">
           {timeframes.map((tf) => (
             <button
               key={tf}
