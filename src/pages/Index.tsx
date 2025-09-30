@@ -13,24 +13,24 @@ const Index = () => {
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
           {/* TradingView Chart - Left side, tall card */}
-          <div className="lg:row-span-3 h-[600px]">
+          <div className="h-[600px] lg:h-[484px]">
             <TradingViewCard />
           </div>
           
           {/* Right side - Stacked cards */}
-          <div className="flex flex-col gap-6 h-[600px] lg:h-full">
+          <div className="flex flex-col gap-6">
             {/* Holders Graph - Slightly larger compact card */}
             <div className="h-40">
               <HoldersGraphCard />
             </div>
             
             {/* Buys vs Sells Card */}
-            <div className="flex-1">
+            <div className="h-[300px]">
               <BuysVsSellsCard />
             </div>
 
             {/* Wallet Age Planet Map */}
-            <div className="flex-1">
+            <div className="h-[300px]">
               <WalletAgePlanetMapCard />
             </div>
           </div>
