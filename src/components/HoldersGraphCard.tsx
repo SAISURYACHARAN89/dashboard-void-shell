@@ -21,45 +21,45 @@ const HoldersGraphCard = () => {
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-4 h-full"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full"
       style={{
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
-      <div className="flex items-center justify-between h-full">
+      <div className="flex items-center gap-6 h-full">
         {/* Left side - Holder info */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {/* Percentage change */}
-          <div className={`flex items-center gap-1.5 mb-2 ${isPositive ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}>
-            <TrendingUp className={`w-3.5 h-3.5 ${!isPositive && 'rotate-180'}`} />
-            <span className="text-sm font-medium">
+          <div className={`flex items-center gap-2 mb-3 ${isPositive ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}>
+            <TrendingUp className={`w-4 h-4 ${!isPositive && 'rotate-180'}`} />
+            <span className="text-base font-semibold">
               {isPositive ? '+' : ''}{percentChange}%
             </span>
-            <span className="text-xs">
+            <span className="text-sm font-medium">
               {isPositive ? '↑' : '↓'} {holderIncrease}
             </span>
           </div>
 
           {/* Main holder count */}
           <div>
-            <div className="text-foreground text-2xl font-bold mb-1">
+            <div className="text-foreground text-3xl font-bold mb-1">
               {holderCount}
             </div>
-            <div className="text-muted-foreground text-xs">
+            <div className="text-muted-foreground text-sm">
               Holders
             </div>
           </div>
         </div>
 
-        {/* Right side - Sparkline */}
-        <div className="w-24 h-full">
+        {/* Right side - Larger Sparkline */}
+        <div className="w-1/2 h-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={sparklineData}>
               <Line 
                 type="monotone"
                 dataKey="value"
                 stroke={isPositive ? '#2ECC71' : '#E74C3C'}
-                strokeWidth={2}
+                strokeWidth={2.5}
                 dot={false}
                 animationDuration={300}
               />

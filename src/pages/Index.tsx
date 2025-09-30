@@ -17,8 +17,8 @@ const Index = () => {
           
           {/* Right side - Stacked cards */}
           <div className="flex flex-col gap-6 h-[600px] lg:h-full">
-            {/* Holders Graph - Compact top card */}
-            <div className="h-32">
+            {/* Holders Graph - Slightly larger compact card */}
+            <div className="h-40">
               <HoldersGraphCard />
             </div>
             
