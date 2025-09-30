@@ -1,15 +1,20 @@
 import { useMemo } from 'react';
-import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, ResponsiveContainer } from 'recharts';
 import { TrendingUp } from 'lucide-react';
 
 const HoldersGraphCard = () => {
-  // Sample data for sparkline
-  const sparklineData = useMemo(() => {
+  // Sample data for timeline chart
+  const timelineData = useMemo(() => {
     const data = [];
     let base = 50;
-    for (let i = 0; i < 20; i++) {
-      base += Math.random() * 3 - 1;
-      data.push({ value: base });
+    const timeLabels = ['12h', '18h', '24h', '6h', '12h', 'Now'];
+    
+    for (let i = 0; i < 6; i++) {
+      base += Math.random() * 5 + 2; // Upward trend
+      data.push({ 
+        value: Math.round(base),
+        time: timeLabels[i]
+      });
     }
     return data;
   }, []);
@@ -51,15 +56,26 @@ const HoldersGraphCard = () => {
           </div>
         </div>
 
-        {/* Right side - Larger Sparkline */}
-        <div className="w-1/2 h-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={sparklineData}>
+        {/* Right side - Timeline Chart */}
+        <div className="w-[45%] h-full flex items-center">
+          <ResponsiveContainer width="100%" height="85%">
+            <LineChart 
+              data={timelineData}
+              margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+            >
+              <XAxis 
+                dataKey="time"
+                stroke="#333333"
+                tick={{ fill: '#666666', fontSize: 10 }}
+                tickLine={{ stroke: '#333333' }}
+                axisLine={{ stroke: '#333333' }}
+                tickMargin={8}
+              />
               <Line 
                 type="monotone"
                 dataKey="value"
                 stroke={isPositive ? '#2ECC71' : '#E74C3C'}
-                strokeWidth={2.5}
+                strokeWidth={2}
                 dot={false}
                 animationDuration={300}
               />
