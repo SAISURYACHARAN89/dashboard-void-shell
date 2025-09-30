@@ -1,5 +1,6 @@
 import TradingViewCard from '@/components/TradingViewCard';
 import HoldersGraphCard from '@/components/HoldersGraphCard';
+import BuysVsSellsCard from '@/components/BuysVsSellsCard';
 
 const Index = () => {
   return (
@@ -22,9 +23,9 @@ const Index = () => {
               <HoldersGraphCard />
             </div>
             
-            {/* Placeholder for Buys vs Sells */}
+            {/* Buys vs Sells Card */}
             <div className="flex-1">
-              {/* Buys vs Sells will go here */}
+              <BuysVsSellsCard />
             </div>
           </div>
         </div>
