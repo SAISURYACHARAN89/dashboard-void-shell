@@ -3,6 +3,7 @@ import HoldersGraphCard from '@/components/HoldersGraphCard';
 import BuysVsSellsCard from '@/components/BuysVsSellsCard';
 import WalletAgePlanetMapCard from '@/components/WalletAgePlanetMapCard';
 import HorizontalMetricsBar from '@/components/HorizontalMetricsBar';
+import MetricCard from '@/components/MetricCard';
 
 const Index = () => {
   return (
@@ -23,6 +24,22 @@ const Index = () => {
             {/* Horizontal Metrics Bar */}
             <div className="h-[60px]">
               <HorizontalMetricsBar />
+            </div>
+
+            {/* Views & Likes Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-[180px]">
+              <MetricCard 
+                type="views"
+                value={240}
+                percentChange={18}
+                chartColor="#00FFFF"
+              />
+              <MetricCard 
+                type="likes"
+                value={65}
+                percentChange={10}
+                chartColor="#FF00FF"
+              />
             </div>
           </div>
           
