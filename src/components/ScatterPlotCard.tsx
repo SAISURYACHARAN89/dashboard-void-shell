@@ -141,7 +141,7 @@ const ScatterPlotCard = () => {
                     key={`cell-${index}`}
                     fill={getColorByType(entry.followers)}
                     opacity={0.8}
-                    r={hoveredPoint === entry ? 3 : 1.5}
+                    r={hoveredPoint === entry ? 2 : 0.8}
                     style={{ 
                       transition: 'all 0.2s ease',
                       cursor: 'pointer'
