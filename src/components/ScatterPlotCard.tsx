@@ -14,13 +14,9 @@ const ScatterPlotCard = () => {
 
   // Follower segment counts
   const miniCount = 324; // <1k followers
-  const miniChangePercent = 8.3;
   const microCount = 127; // 1k-10k followers  
-  const microChangePercent = -2.1;
   const macroCount = 45; // 10k-100k followers
-  const macroChangePercent = 15.7;
   const largeCount = 12; // >100k followers
-  const largeChangePercent = 25.0;
 
   const scatterData = useMemo(() => {
     const data: DataPoint[] = [];
@@ -140,23 +136,16 @@ const ScatterPlotCard = () => {
         </div>
 
         {/* Bottom Metrics Section */}
-        <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-[hsl(var(--dashboard-border))]">
+        <div className="flex items-center justify-between gap-4 mt-4 pt-4 border-t border-[hsl(var(--dashboard-border))]">
           {/* Mini (<1k) */}
           <div className="flex items-center gap-2">
             <Users2 className="w-4 h-4 text-muted-foreground" />
             <div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-lg font-bold text-foreground">
-                  {miniCount}
-                </span>
-                <span className="text-xs font-medium text-muted-foreground">
-                  Mini
-                </span>
+              <div className="text-lg font-bold text-foreground">
+                {miniCount}
               </div>
-              <div 
-                className={`text-xs font-semibold ${miniChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
-              >
-                {miniChangePercent > 0 ? '+' : ''}{miniChangePercent}%
+              <div className="text-xs font-medium text-muted-foreground">
+                Mini
               </div>
             </div>
           </div>
@@ -165,18 +154,11 @@ const ScatterPlotCard = () => {
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-muted-foreground" />
             <div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-lg font-bold text-foreground">
-                  {microCount}
-                </span>
-                <span className="text-xs font-medium text-muted-foreground">
-                  Micro
-                </span>
+              <div className="text-lg font-bold text-foreground">
+                {microCount}
               </div>
-              <div 
-                className={`text-xs font-semibold ${microChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
-              >
-                {microChangePercent > 0 ? '+' : ''}{microChangePercent}%
+              <div className="text-xs font-medium text-muted-foreground">
+                Micro
               </div>
             </div>
           </div>
@@ -185,18 +167,11 @@ const ScatterPlotCard = () => {
           <div className="flex items-center gap-2">
             <UserPlus className="w-4 h-4 text-muted-foreground" />
             <div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-lg font-bold text-foreground">
-                  {macroCount}
-                </span>
-                <span className="text-xs font-medium text-muted-foreground">
-                  Macro
-                </span>
+              <div className="text-lg font-bold text-foreground">
+                {macroCount}
               </div>
-              <div 
-                className={`text-xs font-semibold ${macroChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
-              >
-                {macroChangePercent > 0 ? '+' : ''}{macroChangePercent}%
+              <div className="text-xs font-medium text-muted-foreground">
+                Macro
               </div>
             </div>
           </div>
@@ -205,18 +180,11 @@ const ScatterPlotCard = () => {
           <div className="flex items-center gap-2">
             <Crown className="w-4 h-4 text-muted-foreground" />
             <div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-lg font-bold text-foreground">
-                  {largeCount}
-                </span>
-                <span className="text-xs font-medium text-muted-foreground">
-                  Large
-                </span>
+              <div className="text-lg font-bold text-foreground">
+                {largeCount}
               </div>
-              <div 
-                className={`text-xs font-semibold ${largeChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
-              >
-                {largeChangePercent > 0 ? '+' : ''}{largeChangePercent}%
+              <div className="text-xs font-medium text-muted-foreground">
+                Large
               </div>
             </div>
           </div>
