@@ -31,10 +31,9 @@ const TradingViewCard = () => {
 
   return (
     <div 
-      className="border rounded-2xl p-6 flex flex-col h-full transition-all duration-300 hover:border-[hsl(var(--accent-neon-blue)/0.3)]"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-6 flex flex-col h-full transition-all duration-300 hover:border-[hsl(var(--dashboard-border)/0.6)]"
       style={{
-        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)',
-        boxShadow: '0 0 1px hsl(var(--accent-neon-blue) / 0.1)'
+        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
       {/* Header */}

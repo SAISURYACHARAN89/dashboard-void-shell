@@ -71,10 +71,9 @@ const ScatterPlotCard = () => {
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-6 h-full transition-all duration-300 hover:border-[hsl(var(--accent-neon-blue)/0.25)]"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-6 h-full transition-all duration-300 hover:border-[hsl(var(--dashboard-border)/0.6)] hover:shadow-sm"
       style={{
-        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)',
-        boxShadow: '0 0 1px hsl(var(--accent-neon-blue) / 0.08)'
+        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
       <div className="flex flex-col h-full">

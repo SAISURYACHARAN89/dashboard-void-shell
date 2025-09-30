@@ -38,12 +38,10 @@ const MetricCard = ({ type, value, percentChange, chartColor }: MetricCardProps)
           ? 'linear-gradient(180deg, #151515 0%, #181818 100%)'
           : 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)',
         borderColor: isHovered 
-          ? type === 'views' ? 'hsl(var(--accent-neon-blue) / 0.4)' : 'hsl(var(--accent-neon-green) / 0.4)'
+          ? 'hsl(var(--dashboard-border) / 0.6)' 
           : 'hsl(var(--dashboard-border))',
         boxShadow: isHovered
-          ? type === 'views' 
-            ? '0 0 20px hsl(var(--accent-neon-blue) / 0.15), 0 4px 20px rgba(0, 0, 0, 0.3)'
-            : '0 0 20px hsl(var(--accent-neon-green) / 0.15), 0 4px 20px rgba(0, 0, 0, 0.3)'
+          ? '0 2px 12px rgba(255, 255, 255, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
           : 'none'
       }}
       onMouseEnter={() => setIsHovered(true)}
