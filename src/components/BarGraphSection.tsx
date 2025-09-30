@@ -1,0 +1,124 @@
+import { useMemo, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
+
+const BarGraphSection = () => {
+  const [hoveredBar, setHoveredBar] = useState<any>(null);
+
+  const chartData = useMemo(() => {
+    const timeLabels = ['9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30'];
+    return timeLabels.map((time) => ({
+      time,
+      current: Math.floor(Math.random() * 40 + 30),
+      previous: Math.floor(Math.random() * 35 + 25),
+    }));
+  }, []);
+
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div 
+          className="px-3 py-2 rounded-lg border border-[hsl(var(--dashboard-border))]"
+          style={{ background: 'rgba(0, 0, 0, 0.9)' }}
+        >
+          <div className="text-white text-xs font-medium mb-1">
+            {payload[0].payload.time}
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full" style={{ background: '#3498DB' }} />
+              <span className="text-white text-xs">Current: {payload[0].value}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full" style={{ background: '#5D6D7E' }} />
+              <span className="text-white text-xs">Previous: {payload[1].value}</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <div 
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-6 h-full"
+      style={{
+        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
+      }}
+    >
+      <div className="flex flex-col h-full">
+        {/* Title */}
+        <div className="mb-4">
+          <h3 className="text-foreground text-lg font-semibold">Activity Comparison</h3>
+          <p className="text-muted-foreground text-xs mt-1">Current vs Previous Refresh</p>
+        </div>
+
+        {/* Chart */}
+        <div className="flex-1 min-h-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart 
+              data={chartData}
+              margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
+              barGap={-10}
+            >
+              <XAxis 
+                dataKey="time"
+                stroke="#666666"
+                tick={{ fill: '#666666', fontSize: 11 }}
+                tickLine={{ stroke: '#333333' }}
+                axisLine={{ stroke: '#333333' }}
+              />
+              <YAxis 
+                stroke="#666666"
+                tick={{ fill: '#666666', fontSize: 11 }}
+                tickLine={{ stroke: '#333333' }}
+                axisLine={{ stroke: '#333333' }}
+                domain={[0, 80]}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={false} />
+              
+              {/* Previous refresh bars (semi-transparent) */}
+              <Bar 
+                dataKey="previous"
+                fill="#5D6D7E"
+                opacity={0.5}
+                radius={[4, 4, 0, 0]}
+                onMouseEnter={(data) => setHoveredBar(data)}
+                onMouseLeave={() => setHoveredBar(null)}
+              />
+              
+              {/* Current refresh bars (opaque) */}
+              <Bar 
+                dataKey="current"
+                fill="#3498DB"
+                radius={[4, 4, 0, 0]}
+                label={{
+                  position: 'top',
+                  fill: '#FFFFFF',
+                  fontSize: 11,
+                  fontWeight: 'bold',
+                }}
+                onMouseEnter={(data) => setHoveredBar(data)}
+                onMouseLeave={() => setHoveredBar(null)}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Legend */}
+        <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-[hsl(var(--dashboard-border))]">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded" style={{ background: '#3498DB' }} />
+            <span className="text-xs text-muted-foreground">Current Refresh</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded" style={{ background: '#5D6D7E', opacity: 0.5 }} />
+            <span className="text-xs text-muted-foreground">Previous Refresh</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BarGraphSection;

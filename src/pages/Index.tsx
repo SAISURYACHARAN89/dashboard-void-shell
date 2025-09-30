@@ -4,6 +4,7 @@ import BuysVsSellsCard from '@/components/BuysVsSellsCard';
 import WalletAgePlanetMapCard from '@/components/WalletAgePlanetMapCard';
 import HorizontalMetricsBar from '@/components/HorizontalMetricsBar';
 import MetricCard from '@/components/MetricCard';
+import BarGraphSection from '@/components/BarGraphSection';
 
 const Index = () => {
   return (
@@ -40,6 +41,11 @@ const Index = () => {
                 percentChange={10}
                 chartColor="#FF00FF"
               />
+            </div>
+
+            {/* Bar Graph Section */}
+            <div className="h-[320px]">
+              <BarGraphSection />
             </div>
           </div>
           
