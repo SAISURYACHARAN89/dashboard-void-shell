@@ -55,17 +55,17 @@ const BarGraphSection = () => {
     >
       <div className="flex flex-col h-full">
         {/* Title */}
-        <div className="mb-3">
-          <h3 className="text-foreground text-lg font-semibold">Members vs Unique Authors</h3>
-          <p className="text-muted-foreground text-xs mt-1">Current vs Previous Refresh</p>
+        <div className="mb-2">
+          <h3 className="text-foreground text-base font-semibold">Members vs Unique Authors</h3>
+          <p className="text-muted-foreground text-xs mt-0.5">Current vs Previous Refresh</p>
         </div>
 
         {/* Chart */}
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 -mx-2">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart 
               data={chartData}
-              margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
+              margin={{ top: 10, right: 25, bottom: 15, left: 25 }}
               barGap={-10}
             >
               <XAxis 
@@ -113,7 +113,7 @@ const BarGraphSection = () => {
         </div>
 
         {/* Bottom Metrics Section */}
-        <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-[hsl(var(--dashboard-border))]">
+        <div className="grid grid-cols-2 gap-4 mt-2 pt-3 border-t border-[hsl(var(--dashboard-border))]">
           {/* Members */}
           <div className="flex items-center gap-3">
             <Users className="w-5 h-5 text-muted-foreground" />
