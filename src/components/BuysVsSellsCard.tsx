@@ -29,12 +29,12 @@ const BuysVsSellsCard = () => {
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-3 h-full"
       style={{
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
-      <div className="flex items-center gap-5 h-full pl-2">
+      <div className="flex items-center gap-5 h-full">
         {/* Left side - Stat boxes */}
         <div className="flex flex-col justify-center gap-3 min-w-[140px]">
           {/* Buys Box */}
