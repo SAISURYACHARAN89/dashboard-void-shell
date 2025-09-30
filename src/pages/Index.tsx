@@ -21,7 +21,7 @@ const Index = () => {
             </div>
             
             {/* Horizontal Metrics Bar */}
-            <div className="h-[80px]">
+            <div className="h-[60px]">
               <HorizontalMetricsBar />
             </div>
           </div>
