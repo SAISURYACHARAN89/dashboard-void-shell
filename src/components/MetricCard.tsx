@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, ResponsiveContainer } from 'recharts';
 import { Eye, Heart } from 'lucide-react';
 
 interface MetricCardProps {
@@ -14,10 +14,14 @@ const MetricCard = ({ type, value, percentChange, chartColor }: MetricCardProps)
 
   const chartData = useMemo(() => {
     const data = [];
+    const timeLabels = ['6h', '12h', '18h', '24h', 'Now'];
     let base = value * 0.6;
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 5; i++) {
       base += Math.random() * (value * 0.05) + (value * 0.02);
-      data.push({ value: Math.round(base) });
+      data.push({ 
+        value: Math.round(base),
+        time: timeLabels[i]
+      });
     }
     return data;
   }, [value]);
@@ -65,8 +69,16 @@ const MetricCard = ({ type, value, percentChange, chartColor }: MetricCardProps)
           <ResponsiveContainer width="100%" height="100%">
             <LineChart 
               data={chartData}
-              margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+              margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
             >
+              <XAxis 
+                dataKey="time"
+                stroke="#333333"
+                tick={{ fill: '#666666', fontSize: 10 }}
+                tickLine={{ stroke: '#333333' }}
+                axisLine={{ stroke: '#333333' }}
+                tickMargin={6}
+              />
               <Line 
                 type="monotone"
                 dataKey="value"
