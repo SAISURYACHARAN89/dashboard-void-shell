@@ -26,9 +26,11 @@ const HoldersGraphCard = () => {
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full"
+      className="border border-[hsl(var(--dashboard-border))] rounded-xl p-5 h-full transition-all duration-300 hover:border-[hsl(var(--dashboard-border))]/60 hover:shadow-lg group"
       style={{
-        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
+        background: 'linear-gradient(135deg, rgba(13, 13, 13, 0.8) 0%, rgba(18, 18, 18, 0.9) 100%)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03)'
       }}
     >
       <div className="flex items-center gap-6 h-full">

@@ -9,10 +9,13 @@ import ScatterPlotCard from '@/components/ScatterPlotCard';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
       <div 
-        className="w-full max-w-[1400px] bg-[hsl(var(--dashboard-container))] border border-[hsl(var(--dashboard-border))] rounded-2xl p-8"
-        style={{ minHeight: '600px' }}
+        className="w-full max-w-[1600px] mx-auto bg-[hsl(var(--dashboard-container))] border border-[hsl(var(--dashboard-border))] rounded-3xl p-6 sm:p-8 shadow-2xl"
+        style={{ 
+          minHeight: '600px',
+          boxShadow: '0 0 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+        }}
       >
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
