@@ -1,4 +1,5 @@
 import TradingViewCard from '@/components/TradingViewCard';
+import HoldersGraphCard from '@/components/HoldersGraphCard';
 
 const Index = () => {
   return (
@@ -14,9 +15,17 @@ const Index = () => {
             <TradingViewCard />
           </div>
           
-          {/* Right side - placeholder for future cards */}
-          <div className="hidden lg:block">
-            {/* Holders Graph will go here */}
+          {/* Right side - Stacked cards */}
+          <div className="flex flex-col gap-6 h-[600px] lg:h-full">
+            {/* Holders Graph - Compact top card */}
+            <div className="h-32">
+              <HoldersGraphCard />
+            </div>
+            
+            {/* Placeholder for Buys vs Sells */}
+            <div className="flex-1">
+              {/* Buys vs Sells will go here */}
+            </div>
           </div>
         </div>
       </div>
