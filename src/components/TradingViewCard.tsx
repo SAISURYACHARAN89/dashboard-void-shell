@@ -30,7 +30,13 @@ const TradingViewCard = () => {
   const timeframes: Timeframe[] = ['1M', '5M', '15M', '30M'];
 
   return (
-    <div className="bg-[#111111] border border-[hsl(var(--dashboard-border))] rounded-2xl p-6 flex flex-col h-full">
+    <div 
+      className="border rounded-2xl p-6 flex flex-col h-full transition-all duration-300 hover:border-[hsl(var(--accent-neon-blue)/0.3)]"
+      style={{
+        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)',
+        boxShadow: '0 0 1px hsl(var(--accent-neon-blue) / 0.1)'
+      }}
+    >
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>

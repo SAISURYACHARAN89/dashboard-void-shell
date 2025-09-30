@@ -40,6 +40,8 @@ All colors MUST be HSL.
     
     --dashboard-container: 0 0% 4%;
     --dashboard-border: 0 0% 12%;
+    --accent-neon-green: 145 65% 55%;
+    --accent-neon-blue: 190 95% 55%;
 
     --sidebar-background: 0 0% 98%;
 
@@ -89,6 +91,8 @@ All colors MUST be HSL.
     
     --dashboard-container: 0 0% 4%;
     --dashboard-border: 0 0% 12%;
+    --accent-neon-green: 145 65% 55%;
+    --accent-neon-blue: 190 95% 55%;
     
     --sidebar-background: 0 0% 7%;
     --sidebar-foreground: 0 0% 95%;

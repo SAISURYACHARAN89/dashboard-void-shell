@@ -9,9 +9,10 @@ const WalletAgePlanetMapCard = () => {
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full flex flex-col"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full flex flex-col transition-all duration-300 hover:border-[hsl(var(--accent-neon-blue)/0.25)]"
       style={{
-        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
+        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)',
+        boxShadow: '0 0 1px hsl(var(--accent-neon-blue) / 0.08)'
       }}
     >
       {/* Title */}
