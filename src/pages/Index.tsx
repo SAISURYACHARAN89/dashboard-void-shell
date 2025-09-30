@@ -5,6 +5,7 @@ import WalletAgePlanetMapCard from '@/components/WalletAgePlanetMapCard';
 import HorizontalMetricsBar from '@/components/HorizontalMetricsBar';
 import MetricCard from '@/components/MetricCard';
 import BarGraphSection from '@/components/BarGraphSection';
+import ScatterPlotCard from '@/components/ScatterPlotCard';
 
 const Index = () => {
   return (
@@ -42,11 +43,6 @@ const Index = () => {
                 chartColor="#FF00FF"
               />
             </div>
-
-            {/* Bar Graph Section */}
-            <div className="h-[320px]">
-              <BarGraphSection />
-            </div>
           </div>
           
           {/* Right side - Stacked cards */}
@@ -65,6 +61,19 @@ const Index = () => {
             <div className="h-[300px]">
               <WalletAgePlanetMapCard />
             </div>
+          </div>
+        </div>
+
+        {/* Bottom Row - Bar Graph and Scatter Plot */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          {/* Bar Graph Section */}
+          <div className="h-[320px]">
+            <BarGraphSection />
+          </div>
+
+          {/* Scatter Plot */}
+          <div className="h-[320px]">
+            <ScatterPlotCard />
           </div>
         </div>
       </div>

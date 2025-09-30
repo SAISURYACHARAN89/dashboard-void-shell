@@ -1,0 +1,143 @@
+import { useMemo, useState } from 'react';
+import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+
+interface DataPoint {
+  time: string;
+  followers: number;
+  author: string;
+  timestamp: string;
+}
+
+const ScatterPlotCard = () => {
+  const [hoveredPoint, setHoveredPoint] = useState<DataPoint | null>(null);
+
+  const scatterData = useMemo(() => {
+    const data: DataPoint[] = [];
+    const times = ['9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30', '10:45'];
+    const authors = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry'];
+    
+    // Generate random scatter points
+    for (let i = 0; i < 50; i++) {
+      const timeIndex = Math.floor(Math.random() * times.length);
+      const authorIndex = Math.floor(Math.random() * authors.length);
+      data.push({
+        time: times[timeIndex],
+        followers: Math.floor(Math.random() * 45000) + 1000,
+        author: authors[authorIndex],
+        timestamp: `${times[timeIndex]} • Sept 29`
+      });
+    }
+    return data;
+  }, []);
+
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length && hoveredPoint) {
+      return (
+        <div 
+          className="px-4 py-3 rounded-lg animate-fade-in"
+          style={{ 
+            background: 'rgba(10, 10, 10, 0.95)',
+            border: '1px solid #2ECC71'
+          }}
+        >
+          <div className="text-white font-bold text-sm mb-1">
+            {hoveredPoint.author}
+          </div>
+          <div className="text-white text-xs mb-1">
+            {(hoveredPoint.followers / 1000).toFixed(1)}k followers
+          </div>
+          <div className="text-muted-foreground text-xs">
+            {hoveredPoint.timestamp}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const formatYAxis = (value: number): string => {
+    if (value >= 1000) {
+      return `${(value / 1000).toFixed(0)}k`;
+    }
+    return value.toString();
+  };
+
+  return (
+    <div 
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-6 h-full"
+      style={{
+        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
+      }}
+    >
+      <div className="flex flex-col h-full">
+        {/* Title */}
+        <div className="mb-4">
+          <h3 className="text-foreground text-lg font-semibold">Follower Concentration</h3>
+          <p className="text-muted-foreground text-xs mt-1">Author distribution by follower count</p>
+        </div>
+
+        {/* Scatter Plot */}
+        <div className="flex-1 min-h-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <ScatterChart
+              margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+            >
+              <XAxis 
+                dataKey="time"
+                type="category"
+                allowDuplicatedCategory={false}
+                stroke="#666666"
+                tick={{ fill: '#666666', fontSize: 11 }}
+                tickLine={{ stroke: '#333333' }}
+                axisLine={{ stroke: '#333333' }}
+              />
+              <YAxis 
+                dataKey="followers"
+                type="number"
+                stroke="#666666"
+                tick={{ fill: '#666666', fontSize: 11 }}
+                tickLine={{ stroke: '#333333' }}
+                axisLine={{ stroke: '#333333' }}
+                tickFormatter={formatYAxis}
+                domain={[0, 50000]}
+              />
+              <Tooltip 
+                content={<CustomTooltip />}
+                cursor={{ strokeDasharray: '3 3', stroke: '#333333' }}
+              />
+              <Scatter
+                data={scatterData}
+                fill="#00FFFF"
+                onMouseEnter={(data) => setHoveredPoint(data as DataPoint)}
+                onMouseLeave={() => setHoveredPoint(null)}
+              >
+                {scatterData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill="#00FFFF"
+                    opacity={0.7}
+                    r={hoveredPoint === entry ? 6 : 2}
+                    style={{ 
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer'
+                    }}
+                  />
+                ))}
+              </Scatter>
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Info */}
+        <div className="flex items-center justify-center mt-4 pt-4 border-t border-[hsl(var(--dashboard-border))]">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full" style={{ background: '#00FFFF' }} />
+            <span className="text-xs text-muted-foreground">Each dot represents an author tweet</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ScatterPlotCard;
