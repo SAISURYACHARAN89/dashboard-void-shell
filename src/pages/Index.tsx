@@ -656,7 +656,7 @@ const Index = () => {
                 return (
                   <div 
                     key={item.id} 
-                    className={`${shouldExpandFull ? 'lg:col-span-2' : ''} ${prevWasExpanded && shouldExpandFull ? 'mt-6' : ''}`}
+                    className={`${shouldExpandFull ? 'lg:col-span-2' : ''} ${prevWasExpanded && shouldExpandFull ? 'mt-3' : ''}`}
                   >
                     {renderCard(item)}
                   </div>
