@@ -53,11 +53,11 @@ const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
           </div>
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full" style={{ background: '#3498DB' }} />
+              <div className="w-2 h-2 rounded-full" style={{ background: '#FFFFFF' }} />
               <span className="text-white text-xs">Current: {payload[0].value}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full" style={{ background: '#5D6D7E' }} />
+              <div className="w-2 h-2 rounded-full" style={{ background: '#808080' }} />
               <span className="text-white text-xs">Previous: {payload[1].value}</span>
             </div>
           </div>
@@ -163,7 +163,7 @@ const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
               {/* Previous refresh bars (semi-transparent) */}
               <Bar 
                 dataKey="previous"
-                fill="#5D6D7E"
+                fill="#808080"
                 opacity={0.5}
                 radius={[4, 4, 0, 0]}
                 onMouseEnter={(data) => setHoveredBar(data)}
@@ -173,7 +173,7 @@ const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
               {/* Current refresh bars (opaque) */}
               <Bar 
                 dataKey="current"
-                fill="#3498DB"
+                fill="#FFFFFF"
                 radius={[4, 4, 0, 0]}
                 label={{
                   position: 'top',
