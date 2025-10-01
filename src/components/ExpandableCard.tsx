@@ -18,20 +18,22 @@ const ExpandableCard = ({
   return (
     <div 
       className={`
-        ${isExpanded ? 'relative z-50' : 'relative z-0'}
+        relative
+        transition-all duration-500 ease-in-out
+        ${isExpanded ? 'z-10' : 'z-0'}
         ${className}
       `}
+      style={{
+        height: isExpanded ? expandedHeight : undefined,
+        minHeight: isExpanded ? expandedHeight : undefined,
+      }}
     >
       {/* Card Content */}
       <div 
         className={`
-          transition-all duration-500 cursor-pointer
-          ${isExpanded ? 'absolute inset-0 scale-[1.02] shadow-2xl' : 'relative'}
+          h-full transition-all duration-500 cursor-pointer
+          ${isExpanded ? 'scale-[1.01]' : ''}
         `}
-        style={{
-          height: isExpanded ? expandedHeight : '100%',
-          minHeight: isExpanded ? expandedHeight : undefined,
-        }}
         onClick={onToggle}
       >
         {children}
