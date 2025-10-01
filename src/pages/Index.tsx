@@ -162,20 +162,85 @@ const Index = () => {
     })
   );
 
-  const handleDragEnd = (column: 'leftColumn' | 'rightColumn' | 'bottomRow') => (event: DragEndEvent) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && active.id !== over.id) {
-      setLayout((prevLayout) => {
-        const items = prevLayout[column];
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
+    if (!over) return;
+
+    if (active.id === over.id) return;
+
+    setLayout((prevLayout) => {
+      // Find which column/row the active item is in
+      let sourceColumn: 'leftColumn' | 'rightColumn' | 'bottomRow' | null = null;
+      let sourceIndex = -1;
+
+      if (prevLayout.leftColumn.find(item => item.id === active.id)) {
+        sourceColumn = 'leftColumn';
+        sourceIndex = prevLayout.leftColumn.findIndex(item => item.id === active.id);
+      } else if (prevLayout.rightColumn.find(item => item.id === active.id)) {
+        sourceColumn = 'rightColumn';
+        sourceIndex = prevLayout.rightColumn.findIndex(item => item.id === active.id);
+      } else if (prevLayout.bottomRow.find(item => item.id === active.id)) {
+        sourceColumn = 'bottomRow';
+        sourceIndex = prevLayout.bottomRow.findIndex(item => item.id === active.id);
+      }
+
+      // Find which column/row the over item is in
+      let targetColumn: 'leftColumn' | 'rightColumn' | 'bottomRow' | null = null;
+      let targetIndex = -1;
+
+      if (prevLayout.leftColumn.find(item => item.id === over.id)) {
+        targetColumn = 'leftColumn';
+        targetIndex = prevLayout.leftColumn.findIndex(item => item.id === over.id);
+      } else if (prevLayout.rightColumn.find(item => item.id === over.id)) {
+        targetColumn = 'rightColumn';
+        targetIndex = prevLayout.rightColumn.findIndex(item => item.id === over.id);
+      } else if (prevLayout.bottomRow.find(item => item.id === over.id)) {
+        targetColumn = 'bottomRow';
+        targetIndex = prevLayout.bottomRow.findIndex(item => item.id === over.id);
+      }
+
+      if (!sourceColumn || !targetColumn) return prevLayout;
+
+      // Get the item being moved
+      const [movedItem] = sourceColumn === 'leftColumn' 
+        ? prevLayout.leftColumn.splice(sourceIndex, 1)
+        : sourceColumn === 'rightColumn'
+        ? prevLayout.rightColumn.splice(sourceIndex, 1)
+        : prevLayout.bottomRow.splice(sourceIndex, 1);
+
+      // If moving within the same column
+      if (sourceColumn === targetColumn) {
+        const items = prevLayout[sourceColumn];
         return {
           ...prevLayout,
-          [column]: arrayMove(items, oldIndex, newIndex),
+          [sourceColumn]: arrayMove(items, sourceIndex, targetIndex)
         };
-      });
-    }
+      }
+
+      // Moving between different columns
+      const newLayout = { ...prevLayout };
+      
+      // Remove from source
+      if (sourceColumn === 'leftColumn') {
+        newLayout.leftColumn = newLayout.leftColumn.filter(item => item.id !== active.id);
+      } else if (sourceColumn === 'rightColumn') {
+        newLayout.rightColumn = newLayout.rightColumn.filter(item => item.id !== active.id);
+      } else {
+        newLayout.bottomRow = newLayout.bottomRow.filter(item => item.id !== active.id);
+      }
+
+      // Add to target
+      if (targetColumn === 'leftColumn') {
+        newLayout.leftColumn.splice(targetIndex, 0, movedItem);
+      } else if (targetColumn === 'rightColumn') {
+        newLayout.rightColumn.splice(targetIndex, 0, movedItem);
+      } else {
+        newLayout.bottomRow.splice(targetIndex, 0, movedItem);
+      }
+
+      return newLayout;
+    });
   };
 
   const saveLayout = () => {
@@ -415,67 +480,49 @@ const Index = () => {
             </div>
 
             {/* Canvas Area */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pr-72">
-              {/* Left Column */}
-              <div className="flex flex-col gap-6 min-h-[400px]">
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd('leftColumn')}
-                >
-                  <SortableContext
-                    items={layout.leftColumn.filter(item => visibleSections.has(item.id)).map(item => item.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={[
+                  ...layout.leftColumn.filter(item => visibleSections.has(item.id)).map(item => item.id),
+                  ...layout.rightColumn.filter(item => visibleSections.has(item.id)).map(item => item.id),
+                  ...layout.bottomRow.filter(item => visibleSections.has(item.id)).map(item => item.id),
+                ]}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pr-72">
+                  {/* Left Column */}
+                  <div className="flex flex-col gap-6 min-h-[400px]">
                     {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item) => (
                       <SortableCard key={item.id} id={item.id}>
                         {renderCard(item)}
                       </SortableCard>
                     ))}
-                  </SortableContext>
-                </DndContext>
-              </div>
-              
-              {/* Right Column */}
-              <div className="flex flex-col gap-6 min-h-[400px]">
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd('rightColumn')}
-                >
-                  <SortableContext
-                    items={layout.rightColumn.filter(item => visibleSections.has(item.id)).map(item => item.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
+                  </div>
+                  
+                  {/* Right Column */}
+                  <div className="flex flex-col gap-6 min-h-[400px]">
                     {layout.rightColumn.filter(item => visibleSections.has(item.id)).map((item) => (
                       <SortableCard key={item.id} id={item.id}>
                         {renderCard(item)}
                       </SortableCard>
                     ))}
-                  </SortableContext>
-                </DndContext>
-              </div>
-            </div>
+                  </div>
+                </div>
 
-            {/* Bottom Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 pr-72 min-h-[200px]">
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd('bottomRow')}
-              >
-                <SortableContext
-                  items={layout.bottomRow.filter(item => visibleSections.has(item.id)).map(item => item.id)}
-                  strategy={verticalListSortingStrategy}
-                >
+                {/* Bottom Row */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 pr-72 min-h-[200px]">
                   {layout.bottomRow.filter(item => visibleSections.has(item.id)).map((item) => (
                     <SortableCard key={item.id} id={item.id}>
                       {renderCard(item)}
                     </SortableCard>
                   ))}
-                </SortableContext>
-              </DndContext>
-            </div>
+                </div>
+              </SortableContext>
+            </DndContext>
           </div>
         ) : (
           // Normal Mode: No drag handles, just click to expand
