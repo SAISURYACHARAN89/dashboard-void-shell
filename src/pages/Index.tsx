@@ -8,6 +8,7 @@ import MetricCard from '@/components/MetricCard';
 import BarGraphSection from '@/components/BarGraphSection';
 import ScatterPlotCard from '@/components/ScatterPlotCard';
 import ExpandableCard from '@/components/ExpandableCard';
+import CoinInfoHeader from '@/components/CoinInfoHeader';
 
 const Index = () => {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
@@ -28,6 +29,11 @@ const Index = () => {
       <div 
         className="w-full max-w-[1400px] bg-[hsl(var(--dashboard-container))] border border-[hsl(var(--dashboard-border))] rounded-2xl p-8"
       >
+        {/* Coin Info Header */}
+        <div className="mb-6">
+          <CoinInfoHeader />
+        </div>
+
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column */}
