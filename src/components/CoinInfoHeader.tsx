@@ -63,7 +63,7 @@ const CoinInfoHeader = ({
   };
 
   return (
-    <div className="w-full bg-gradient-to-r from-[hsl(0,0%,5%)] to-[hsl(0,0%,7%)] border border-[hsl(var(--dashboard-border))] rounded-xl px-6 py-4">
+    <div className="w-full bg-gradient-to-r from-[hsl(0,0%,5%)] to-[hsl(0,0%,7%)] border border-[hsl(var(--dashboard-border))] rounded-xl px-6 py-4 shadow-[0_0_15px_rgba(0,255,255,0.15)] hover:shadow-[0_0_20px_rgba(0,255,255,0.25)] transition-shadow duration-300">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         {/* Left Block - Identity */}
         <div className="flex items-center gap-4">
