@@ -92,6 +92,7 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
             <LineChart 
               data={chartData}
               margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
+              key={timeframe}
             >
               <XAxis 
                 dataKey="time"
