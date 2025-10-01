@@ -54,7 +54,7 @@ const Index = () => {
                   type="views"
                   value={240}
                   percentChange={18}
-                  chartColor="#00FFFF"
+                  chartColor="#B0B0B0"
                   isExpanded={expandedCards.has('views')}
                 />
               </ExpandableCard>
@@ -68,7 +68,7 @@ const Index = () => {
                   type="likes"
                   value={65}
                   percentChange={10}
-                  chartColor="#FF00FF"
+                  chartColor="#B0B0B0"
                   isExpanded={expandedCards.has('likes')}
                 />
               </ExpandableCard>

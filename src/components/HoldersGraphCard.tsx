@@ -101,7 +101,7 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
               <Line 
                 type="monotone"
                 dataKey="value"
-                stroke={isPositive ? '#2ECC71' : '#E74C3C'}
+                stroke="#B0B0B0"
                 strokeWidth={2}
                 dot={isExpanded}
                 animationDuration={300}
