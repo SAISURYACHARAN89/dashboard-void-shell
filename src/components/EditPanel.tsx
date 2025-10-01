@@ -23,13 +23,9 @@ const EditPanel = ({ isOpen, onClose, title, children, position = 'right' }: Edi
       {/* Panel */}
       <div 
         className={`
-          fixed md:absolute z-50
+          fixed z-50
           bg-[#111111] border border-[#1E1E1E] rounded-lg shadow-lg
-          ${position === 'right' 
-            ? 'md:right-0 md:top-0 md:w-80' 
-            : 'md:right-0 md:top-12 md:w-80'
-          }
-          bottom-0 left-0 right-0 md:bottom-auto md:left-auto
+          bottom-0 left-0 right-0 md:bottom-auto md:left-auto md:right-6 md:top-16 md:w-80
           max-h-[70vh] md:max-h-[500px]
           animate-in slide-in-from-bottom md:slide-in-from-right
           duration-200
