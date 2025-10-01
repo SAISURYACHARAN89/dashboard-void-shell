@@ -35,7 +35,7 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full transition-all duration-300 hover:scale-[1.02]"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full transition-all duration-300 hover:scale-[1.02] flex flex-col overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
@@ -52,7 +52,7 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
           </p>
         </div>
       )}
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col flex-1 min-h-0">
         {/* Top section - Icon and Stats */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -76,7 +76,7 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
         </div>
 
         {/* Bottom section - Mini Chart */}
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 overflow-hidden">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart 
               data={chartData}
