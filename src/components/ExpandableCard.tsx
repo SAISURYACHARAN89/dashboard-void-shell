@@ -19,16 +19,15 @@ const ExpandableCard = ({
   return (
     <div 
       className={`
-        relative cursor-pointer
+        relative
         transition-all duration-500 ease-in-out
         ${isExpanded ? 'z-50' : 'z-0'}
         ${className}
       `}
       style={{
         gridColumn: isExpanded ? '1 / -1' : 'auto',
-        height: isExpanded ? expandedHeight : 'auto',
+        height: isExpanded ? expandedHeight : undefined,
       }}
-      onClick={onToggle}
     >
       {/* Expand/Collapse Button */}
       <div 
@@ -56,9 +55,10 @@ const ExpandableCard = ({
       {/* Card Content */}
       <div 
         className={`
-          h-full transition-all duration-500
-          ${isExpanded ? 'scale-[1.01]' : 'hover:scale-[1.01]'}
+          h-full transition-all duration-500 cursor-pointer
+          ${isExpanded ? 'scale-[1.01]' : ''}
         `}
+        onClick={onToggle}
       >
         {children}
       </div>
