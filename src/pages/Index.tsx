@@ -116,7 +116,7 @@ const Index = () => {
             isExpanded={expandedCards.has('bar-graph')}
             onToggle={() => toggleCard('bar-graph')}
             expandedHeight="700px"
-            className="h-[320px] group"
+            className={`h-[320px] group ${expandedCards.has('bar-graph') ? 'lg:col-span-2' : ''}`}
           >
             <BarGraphSection isExpanded={expandedCards.has('bar-graph')} />
           </ExpandableCard>
@@ -126,7 +126,7 @@ const Index = () => {
             isExpanded={expandedCards.has('scatter')}
             onToggle={() => toggleCard('scatter')}
             expandedHeight="700px"
-            className="h-[320px] group"
+            className={`h-[320px] group ${expandedCards.has('scatter') ? 'lg:col-span-2' : ''}`}
           >
             <ScatterPlotCard isExpanded={expandedCards.has('scatter')} />
           </ExpandableCard>
