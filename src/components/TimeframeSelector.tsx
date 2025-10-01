@@ -13,9 +13,12 @@ const TimeframeSelector = ({ value, onChange }: TimeframeSelectorProps) => {
   const timeframes: Timeframe[] = ['5m', '15m', '1h'];
 
   return (
-    <div className="relative">
+    <div className="relative" onClick={(e) => e.stopPropagation()}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1C1C1C] text-white text-xs font-medium hover:bg-[#2A2A2A] transition-colors"
       >
         {value}
@@ -32,7 +35,8 @@ const TimeframeSelector = ({ value, onChange }: TimeframeSelectorProps) => {
             {timeframes.map((tf) => (
               <button
                 key={tf}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   onChange(tf);
                   setIsOpen(false);
                 }}
