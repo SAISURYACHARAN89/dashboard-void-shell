@@ -10,9 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 
 interface BarGraphSectionProps {
   isExpanded?: boolean;
+  isLayoutMode?: boolean;
 }
 
-const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
+const BarGraphSection = ({ isExpanded = false, isLayoutMode = false }: BarGraphSectionProps) => {
   const [hoveredBar, setHoveredBar] = useState<any>(null);
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -75,18 +76,20 @@ const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
       }}
     >
       {/* Edit Button & Timeframe Selector */}
-      <div className="absolute top-6 right-6 z-10 flex items-center gap-2">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsEditOpen(true);
-          }}
-          className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
-        <TimeframeSelector value={timeframe} onChange={setTimeframe} />
-      </div>
+      {!isLayoutMode && (
+        <div className="absolute top-6 right-6 z-10 flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsEditOpen(true);
+            }}
+            className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+          <TimeframeSelector value={timeframe} onChange={setTimeframe} />
+        </div>
+      )}
 
       <EditModal
         isOpen={isEditOpen}

@@ -8,9 +8,10 @@ import { Button } from './ui/button';
 
 interface WalletAgePlanetMapCardProps {
   isExpanded?: boolean;
+  isLayoutMode?: boolean;
 }
 
-const WalletAgePlanetMapCard = ({ isExpanded = false }: WalletAgePlanetMapCardProps) => {
+const WalletAgePlanetMapCard = ({ isExpanded = false, isLayoutMode = false }: WalletAgePlanetMapCardProps) => {
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -34,18 +35,20 @@ const WalletAgePlanetMapCard = ({ isExpanded = false }: WalletAgePlanetMapCardPr
       }}
     >
       {/* Edit Button & Timeframe Selector */}
-      <div className="absolute top-5 right-5 z-10 flex items-center gap-2">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsEditOpen(true);
-          }}
-          className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
-        <TimeframeSelector value={timeframe} onChange={setTimeframe} />
-      </div>
+      {!isLayoutMode && (
+        <div className="absolute top-5 right-5 z-10 flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsEditOpen(true);
+            }}
+            className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+          <TimeframeSelector value={timeframe} onChange={setTimeframe} />
+        </div>
+      )}
 
       <EditModal
         isOpen={isEditOpen}

@@ -9,9 +9,10 @@ import { Button } from './ui/button';
 
 interface HoldersGraphCardProps {
   isExpanded?: boolean;
+  isLayoutMode?: boolean;
 }
 
-const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
+const HoldersGraphCard = ({ isExpanded = false, isLayoutMode = false }: HoldersGraphCardProps) => {
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -49,18 +50,20 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
       }}
     >
       {/* Edit Button & Timeframe Selector */}
-      <div className="absolute top-5 right-5 z-10 flex items-center gap-2">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsEditOpen(true);
-          }}
-          className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
-        <TimeframeSelector value={timeframe} onChange={setTimeframe} />
-      </div>
+      {!isLayoutMode && (
+        <div className="absolute top-5 right-5 z-10 flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsEditOpen(true);
+            }}
+            className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+          <TimeframeSelector value={timeframe} onChange={setTimeframe} />
+        </div>
+      )}
 
       <EditModal
         isOpen={isEditOpen}

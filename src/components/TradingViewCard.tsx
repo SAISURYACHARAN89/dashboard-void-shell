@@ -5,9 +5,10 @@ type Timeframe = '1M' | '5M' | '15M' | '30M' | '1H' | '4H' | '1D';
 
 interface TradingViewCardProps {
   isExpanded?: boolean;
+  isLayoutMode?: boolean;
 }
 
-const TradingViewCard = ({ isExpanded = false }: TradingViewCardProps) => {
+const TradingViewCard = ({ isExpanded = false, isLayoutMode = false }: TradingViewCardProps) => {
   const [activeTimeframe, setActiveTimeframe] = useState<Timeframe>('5M');
 
   // Generate sample chart data
@@ -52,34 +53,38 @@ const TradingViewCard = ({ isExpanded = false }: TradingViewCardProps) => {
         </div>
         
         {/* Timeframe Toggle - Desktop */}
-        <div className="hidden md:flex gap-1 bg-[#0A0A0A] rounded-lg p-1">
-          {timeframes.map((tf) => (
-            <button
-              key={tf}
-              onClick={() => handleTimeframeChange(tf)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                activeTimeframe === tf
-                  ? 'bg-[#2A2A2A] text-white'
-                  : 'text-[#CCCCCC] hover:text-white'
-              }`}
-            >
-              {tf}
-            </button>
-          ))}
-        </div>
+        {!isLayoutMode && (
+          <div className="hidden md:flex gap-1 bg-[#0A0A0A] rounded-lg p-1">
+            {timeframes.map((tf) => (
+              <button
+                key={tf}
+                onClick={() => handleTimeframeChange(tf)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  activeTimeframe === tf
+                    ? 'bg-[#2A2A2A] text-white'
+                    : 'text-[#CCCCCC] hover:text-white'
+                }`}
+              >
+                {tf}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Timeframe Dropdown - Mobile */}
-        <select
-          value={activeTimeframe}
-          onChange={(e) => handleTimeframeChange(e.target.value as Timeframe)}
-          className="md:hidden bg-[#0A0A0A] text-white text-xs px-3 py-1.5 rounded-lg border border-[hsl(var(--dashboard-border))] focus:outline-none focus:ring-2 focus:ring-[#2A2A2A]"
-        >
-          {timeframes.map((tf) => (
-            <option key={tf} value={tf}>
-              {tf}
-            </option>
-          ))}
-        </select>
+        {!isLayoutMode && (
+          <select
+            value={activeTimeframe}
+            onChange={(e) => handleTimeframeChange(e.target.value as Timeframe)}
+            className="md:hidden bg-[#0A0A0A] text-white text-xs px-3 py-1.5 rounded-lg border border-[hsl(var(--dashboard-border))] focus:outline-none focus:ring-2 focus:ring-[#2A2A2A]"
+          >
+            {timeframes.map((tf) => (
+              <option key={tf} value={tf}>
+                {tf}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {/* Chart Container */}

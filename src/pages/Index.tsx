@@ -292,7 +292,7 @@ const Index = () => {
       case 'trading-view':
         return (
           <div className="h-[600px] lg:h-[484px]">
-            <TradingViewCard isExpanded={false} />
+            <TradingViewCard isExpanded={false} isLayoutMode={isLayoutMode} />
           </div>
         );
       case 'holders':
@@ -303,7 +303,7 @@ const Index = () => {
             expandedHeight="600px"
             className="h-40 group"
           >
-            <HoldersGraphCard isExpanded={!isLayoutMode && expandedCards.has('holders')} />
+            <HoldersGraphCard isExpanded={!isLayoutMode && expandedCards.has('holders')} isLayoutMode={isLayoutMode} />
           </ExpandableCard>
         );
       case 'metrics-bar':
@@ -315,7 +315,7 @@ const Index = () => {
       case 'buys-sells':
         return (
           <div className="h-[300px]">
-            <BuysVsSellsCard isExpanded={false} />
+            <BuysVsSellsCard isExpanded={false} isLayoutMode={isLayoutMode} />
           </div>
         );
       case 'views':
@@ -333,6 +333,7 @@ const Index = () => {
                 percentChange={18}
                 chartColor="#B0B0B0"
                 isExpanded={!isLayoutMode && expandedCards.has('views')}
+                isLayoutMode={isLayoutMode}
               />
             </ExpandableCard>
           </div>
@@ -345,7 +346,7 @@ const Index = () => {
             expandedHeight="600px"
             className="h-[300px] group"
           >
-            <WalletAgePlanetMapCard isExpanded={!isLayoutMode && expandedCards.has('wallet-age')} />
+            <WalletAgePlanetMapCard isExpanded={!isLayoutMode && expandedCards.has('wallet-age')} isLayoutMode={isLayoutMode} />
           </ExpandableCard>
         );
       case 'likes':
@@ -363,6 +364,7 @@ const Index = () => {
                 percentChange={10}
                 chartColor="#B0B0B0"
                 isExpanded={!isLayoutMode && expandedCards.has('likes')}
+                isLayoutMode={isLayoutMode}
               />
             </ExpandableCard>
           </div>
@@ -375,7 +377,7 @@ const Index = () => {
             expandedHeight="700px"
             className="h-[320px] group"
           >
-            <BarGraphSection isExpanded={!isLayoutMode && expandedCards.has('bar-graph')} />
+            <BarGraphSection isExpanded={!isLayoutMode && expandedCards.has('bar-graph')} isLayoutMode={isLayoutMode} />
           </ExpandableCard>
         );
       case 'scatter':
@@ -386,7 +388,7 @@ const Index = () => {
             expandedHeight="700px"
             className="h-[320px] group"
           >
-            <ScatterPlotCard isExpanded={!isLayoutMode && expandedCards.has('scatter')} />
+            <ScatterPlotCard isExpanded={!isLayoutMode && expandedCards.has('scatter')} isLayoutMode={isLayoutMode} />
           </ExpandableCard>
         );
       default:

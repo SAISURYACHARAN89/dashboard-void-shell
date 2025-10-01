@@ -9,9 +9,10 @@ import { Button } from './ui/button';
 
 interface BuysVsSellsCardProps {
   isExpanded?: boolean;
+  isLayoutMode?: boolean;
 }
 
-const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
+const BuysVsSellsCard = ({ isExpanded = false, isLayoutMode = false }: BuysVsSellsCardProps) => {
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -55,18 +56,20 @@ const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
       }}
     >
       {/* Edit Button & Timeframe Selector */}
-      <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsEditOpen(true);
-          }}
-          className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
-        <TimeframeSelector value={timeframe} onChange={setTimeframe} />
-      </div>
+      {!isLayoutMode && (
+        <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsEditOpen(true);
+            }}
+            className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+          <TimeframeSelector value={timeframe} onChange={setTimeframe} />
+        </div>
+      )}
 
       <EditModal
         isOpen={isEditOpen}
