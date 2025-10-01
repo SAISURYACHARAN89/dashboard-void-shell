@@ -166,23 +166,26 @@ const Index = () => {
     const { active, over } = event;
 
     if (!over) return;
-
     if (active.id === over.id) return;
 
     setLayout((prevLayout) => {
       // Find which column/row the active item is in
       let sourceColumn: 'leftColumn' | 'rightColumn' | 'bottomRow' | null = null;
       let sourceIndex = -1;
+      let movedItem = null;
 
       if (prevLayout.leftColumn.find(item => item.id === active.id)) {
         sourceColumn = 'leftColumn';
         sourceIndex = prevLayout.leftColumn.findIndex(item => item.id === active.id);
+        movedItem = prevLayout.leftColumn[sourceIndex];
       } else if (prevLayout.rightColumn.find(item => item.id === active.id)) {
         sourceColumn = 'rightColumn';
         sourceIndex = prevLayout.rightColumn.findIndex(item => item.id === active.id);
+        movedItem = prevLayout.rightColumn[sourceIndex];
       } else if (prevLayout.bottomRow.find(item => item.id === active.id)) {
         sourceColumn = 'bottomRow';
         sourceIndex = prevLayout.bottomRow.findIndex(item => item.id === active.id);
+        movedItem = prevLayout.bottomRow[sourceIndex];
       }
 
       // Find which column/row the over item is in
@@ -200,26 +203,24 @@ const Index = () => {
         targetIndex = prevLayout.bottomRow.findIndex(item => item.id === over.id);
       }
 
-      if (!sourceColumn || !targetColumn) return prevLayout;
-
-      // Get the item being moved
-      const [movedItem] = sourceColumn === 'leftColumn' 
-        ? prevLayout.leftColumn.splice(sourceIndex, 1)
-        : sourceColumn === 'rightColumn'
-        ? prevLayout.rightColumn.splice(sourceIndex, 1)
-        : prevLayout.bottomRow.splice(sourceIndex, 1);
+      if (!sourceColumn || !targetColumn || !movedItem) return prevLayout;
 
       // If moving within the same column
       if (sourceColumn === targetColumn) {
-        const items = prevLayout[sourceColumn];
+        const items = [...prevLayout[sourceColumn]];
+        const reordered = arrayMove(items, sourceIndex, targetIndex);
         return {
           ...prevLayout,
-          [sourceColumn]: arrayMove(items, sourceIndex, targetIndex)
+          [sourceColumn]: reordered
         };
       }
 
-      // Moving between different columns
-      const newLayout = { ...prevLayout };
+      // Moving between different columns - create new arrays
+      const newLayout = {
+        leftColumn: [...prevLayout.leftColumn],
+        rightColumn: [...prevLayout.rightColumn],
+        bottomRow: [...prevLayout.bottomRow],
+      };
       
       // Remove from source
       if (sourceColumn === 'leftColumn') {
@@ -230,7 +231,7 @@ const Index = () => {
         newLayout.bottomRow = newLayout.bottomRow.filter(item => item.id !== active.id);
       }
 
-      // Add to target
+      // Add to target at the correct position
       if (targetColumn === 'leftColumn') {
         newLayout.leftColumn.splice(targetIndex, 0, movedItem);
       } else if (targetColumn === 'rightColumn') {
