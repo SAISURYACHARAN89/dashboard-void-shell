@@ -97,7 +97,7 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
         </div>
       </EditModal>
 
-      <div className={`flex ${isExpanded ? 'flex-col' : 'items-center'} gap-6 h-full`}>
+      <div className={`flex ${isExpanded ? 'flex-col' : 'items-center'} gap-6 h-full pt-8`}>
         {/* Holder info */}
         <div className={`${isExpanded ? 'w-full' : 'flex-1 min-w-0'}`}>
           {/* Percentage change */}
