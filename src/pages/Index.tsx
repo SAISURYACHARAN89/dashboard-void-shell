@@ -109,6 +109,7 @@ const SortableCard = ({
 const Index = () => {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [layout, setLayout] = useState(DEFAULT_LAYOUT);
+  const [isLayoutMode, setIsLayoutMode] = useState(false);
   const { toast } = useToast();
 
   // Load layout from localStorage on mount
@@ -160,6 +161,7 @@ const Index = () => {
 
   const saveLayout = () => {
     localStorage.setItem('dashboard-layout', JSON.stringify(layout));
+    setIsLayoutMode(false);
     toast({
       title: "Layout Saved",
       description: "Your dashboard layout has been saved successfully.",
@@ -169,10 +171,15 @@ const Index = () => {
   const resetLayout = () => {
     setLayout(DEFAULT_LAYOUT);
     localStorage.removeItem('dashboard-layout');
+    setIsLayoutMode(false);
     toast({
       title: "Layout Reset",
       description: "Your dashboard layout has been reset to default.",
     });
+  };
+
+  const startLayoutMode = () => {
+    setIsLayoutMode(true);
   };
 
   const renderCard = (item: typeof DEFAULT_LAYOUT.leftColumn[0]) => {
@@ -292,109 +299,198 @@ const Index = () => {
         <div className="mb-6 flex items-center justify-between gap-4">
           <CoinInfoHeader />
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={resetLayout}
-              className="hidden sm:flex"
-            >
-              Reset Layout
-            </Button>
-            <Button
-              size="sm"
-              onClick={saveLayout}
-              className="gap-2"
-            >
-              <Save className="h-4 w-4" />
-              Save Layout
-            </Button>
+            {!isLayoutMode ? (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={startLayoutMode}
+                >
+                  Create Layout
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={resetLayout}
+                  className="hidden sm:flex"
+                >
+                  Reset Layout
+                </Button>
+              </>
+            ) : (
+              <Button
+                size="sm"
+                onClick={saveLayout}
+                className="gap-2"
+              >
+                <Save className="h-4 w-4" />
+                Save Layout
+              </Button>
+            )}
           </div>
         </div>
 
-        {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column */}
-          <div className="flex flex-col gap-6">
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd('leftColumn')}
-            >
-              <SortableContext
-                items={layout.leftColumn.map(item => item.id)}
-                strategy={verticalListSortingStrategy}
+        {isLayoutMode ? (
+          // Layout Mode: Blank canvas with section library
+          <div className="relative min-h-[800px] border-2 border-dashed border-muted-foreground/20 rounded-xl p-6">
+            {/* Section Library Panel */}
+            <div className="absolute top-4 right-4 w-64 bg-card border border-border rounded-lg p-4 shadow-lg">
+              <h3 className="text-sm font-semibold mb-3 text-foreground">Available Sections</h3>
+              <div className="space-y-2">
+                {[
+                  { id: 'trading-view', label: 'TradingView Chart', type: 'trading-view' },
+                  { id: 'holders', label: 'Holders Graph', type: 'holders' },
+                  { id: 'metrics-bar', label: 'Metrics Bar', type: 'metrics-bar' },
+                  { id: 'buys-sells', label: 'Buys vs Sells', type: 'buys-sells' },
+                  { id: 'views', label: 'Views', type: 'views' },
+                  { id: 'wallet-age', label: 'Wallet Age', type: 'wallet-age' },
+                  { id: 'likes', label: 'Likes', type: 'likes' },
+                  { id: 'bar-graph', label: 'Bar Graph', type: 'bar-graph' },
+                  { id: 'scatter', label: 'Scatter Plot', type: 'scatter' },
+                ].map((section) => (
+                  <div
+                    key={section.id}
+                    className="p-3 bg-muted rounded border border-border cursor-move hover:bg-accent transition-colors text-xs font-medium"
+                  >
+                    {section.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Canvas Area */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pr-72">
+              {/* Left Column */}
+              <div className="flex flex-col gap-6">
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd('leftColumn')}
+                >
+                  <SortableContext
+                    items={layout.leftColumn.map(item => item.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {layout.leftColumn.map((item) => {
+                      if (item.type === 'views') {
+                        const likesItem = layout.leftColumn.find(i => i.type === 'likes');
+                        if (likesItem) {
+                          return (
+                            <div key="views-likes-grid" className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                              <SortableCard id={item.id}>
+                                {renderCard(item)}
+                              </SortableCard>
+                              <SortableCard id={likesItem.id}>
+                                {renderCard(likesItem)}
+                              </SortableCard>
+                            </div>
+                          );
+                        }
+                      }
+                      if (item.type === 'likes') {
+                        return null;
+                      }
+                      return (
+                        <SortableCard key={item.id} id={item.id}>
+                          {renderCard(item)}
+                        </SortableCard>
+                      );
+                    })}
+                  </SortableContext>
+                </DndContext>
+              </div>
+              
+              {/* Right Column */}
+              <div className="flex flex-col gap-6">
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd('rightColumn')}
+                >
+                  <SortableContext
+                    items={layout.rightColumn.map(item => item.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {layout.rightColumn.map((item) => (
+                      <SortableCard key={item.id} id={item.id}>
+                        {renderCard(item)}
+                      </SortableCard>
+                    ))}
+                  </SortableContext>
+                </DndContext>
+              </div>
+            </div>
+
+            {/* Bottom Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 pr-72">
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd('bottomRow')}
               >
+                <SortableContext
+                  items={layout.bottomRow.map(item => item.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {layout.bottomRow.map((item) => (
+                    <SortableCard key={item.id} id={item.id}>
+                      {renderCard(item)}
+                    </SortableCard>
+                  ))}
+                </SortableContext>
+              </DndContext>
+            </div>
+          </div>
+        ) : (
+          // Normal Mode: No drag handles, just click to expand
+          <>
+            {/* Dashboard Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="flex flex-col gap-6">
                 {layout.leftColumn.map((item) => {
-                  // Handle views and likes as a grid
                   if (item.type === 'views') {
                     const likesItem = layout.leftColumn.find(i => i.type === 'likes');
                     if (likesItem) {
                       return (
                         <div key="views-likes-grid" className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                          <SortableCard id={item.id}>
-                            {renderCard(item)}
-                          </SortableCard>
-                          <SortableCard id={likesItem.id}>
-                            {renderCard(likesItem)}
-                          </SortableCard>
+                          {renderCard(item)}
+                          {renderCard(likesItem)}
                         </div>
                       );
                     }
                   }
                   if (item.type === 'likes') {
-                    // Skip likes as it's rendered with views
                     return null;
                   }
                   return (
-                    <SortableCard key={item.id} id={item.id}>
+                    <div key={item.id}>
                       {renderCard(item)}
-                    </SortableCard>
+                    </div>
                   );
                 })}
-              </SortableContext>
-            </DndContext>
-          </div>
-          
-          {/* Right Column */}
-          <div className="flex flex-col gap-6">
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd('rightColumn')}
-            >
-              <SortableContext
-                items={layout.rightColumn.map(item => item.id)}
-                strategy={verticalListSortingStrategy}
-              >
+              </div>
+              
+              {/* Right Column */}
+              <div className="flex flex-col gap-6">
                 {layout.rightColumn.map((item) => (
-                  <SortableCard key={item.id} id={item.id}>
+                  <div key={item.id}>
                     {renderCard(item)}
-                  </SortableCard>
+                  </div>
                 ))}
-              </SortableContext>
-            </DndContext>
-          </div>
-        </div>
+              </div>
+            </div>
 
-        {/* Bottom Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd('bottomRow')}
-          >
-            <SortableContext
-              items={layout.bottomRow.map(item => item.id)}
-              strategy={verticalListSortingStrategy}
-            >
+            {/* Bottom Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
               {layout.bottomRow.map((item) => (
-                <SortableCard key={item.id} id={item.id}>
+                <div key={item.id}>
                   {renderCard(item)}
-                </SortableCard>
+                </div>
               ))}
-            </SortableContext>
-          </DndContext>
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
