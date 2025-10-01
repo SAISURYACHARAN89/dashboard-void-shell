@@ -29,9 +29,9 @@ const Index = () => {
         className="w-full max-w-[1400px] bg-[hsl(var(--dashboard-container))] border border-[hsl(var(--dashboard-border))] rounded-2xl p-8"
       >
         {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 auto-rows-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column */}
-          <div className="flex flex-col gap-6 auto-rows-auto">
+          <div className="flex flex-col gap-6">
             {/* TradingView Chart */}
             <ExpandableCard
               isExpanded={expandedCards.has('trading')}
@@ -86,7 +86,7 @@ const Index = () => {
           </div>
           
           {/* Right side - Stacked cards */}
-          <div className="flex flex-col gap-6 auto-rows-auto">
+          <div className="flex flex-col gap-6">
             {/* Holders Graph - Slightly larger compact card */}
             <ExpandableCard
               isExpanded={expandedCards.has('holders')}

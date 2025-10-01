@@ -26,6 +26,7 @@ const ExpandableCard = ({
       `}
       style={{
         height: isExpanded ? expandedHeight : undefined,
+        minHeight: isExpanded ? expandedHeight : undefined,
       }}
     >
       {/* Expand/Collapse Button */}
