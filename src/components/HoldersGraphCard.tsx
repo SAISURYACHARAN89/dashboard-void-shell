@@ -134,8 +134,8 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
             >
               <defs>
                 <linearGradient id="holderGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2ECC71" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#2ECC71" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#B0B0B0" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#B0B0B0" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <XAxis 
@@ -167,7 +167,7 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
               <Area 
                 type="monotone"
                 dataKey="value"
-                stroke="#2ECC71"
+                stroke="#B0B0B0"
                 strokeWidth={2.5}
                 fill="url(#holderGradient)"
                 dot={isExpanded}
