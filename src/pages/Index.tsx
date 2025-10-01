@@ -27,12 +27,11 @@ const Index = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div 
         className="w-full max-w-[1400px] bg-[hsl(var(--dashboard-container))] border border-[hsl(var(--dashboard-border))] rounded-2xl p-8"
-        style={{ minHeight: '600px' }}
       >
         {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 auto-rows-auto">
           {/* Left Column */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 auto-rows-auto">
             {/* TradingView Chart */}
             <ExpandableCard
               isExpanded={expandedCards.has('trading')}
@@ -54,12 +53,12 @@ const Index = () => {
             </ExpandableCard>
 
             {/* Views & Likes Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-[204px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <ExpandableCard
                 isExpanded={expandedCards.has('views')}
                 onToggle={() => toggleCard('views')}
                 expandedHeight="500px"
-                className="group"
+                className="h-[204px] group"
               >
                 <MetricCard 
                   type="views"
@@ -73,7 +72,7 @@ const Index = () => {
                 isExpanded={expandedCards.has('likes')}
                 onToggle={() => toggleCard('likes')}
                 expandedHeight="500px"
-                className="group"
+                className="h-[204px] group"
               >
                 <MetricCard 
                   type="likes"
@@ -87,7 +86,7 @@ const Index = () => {
           </div>
           
           {/* Right side - Stacked cards */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 auto-rows-auto">
             {/* Holders Graph - Slightly larger compact card */}
             <ExpandableCard
               isExpanded={expandedCards.has('holders')}

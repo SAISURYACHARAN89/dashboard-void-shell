@@ -21,11 +21,10 @@ const ExpandableCard = ({
       className={`
         relative
         transition-all duration-500 ease-in-out
-        ${isExpanded ? 'z-50' : 'z-0'}
+        ${isExpanded ? 'z-10' : 'z-0'}
         ${className}
       `}
       style={{
-        gridColumn: isExpanded ? '1 / -1' : 'auto',
         height: isExpanded ? expandedHeight : undefined,
       }}
     >
