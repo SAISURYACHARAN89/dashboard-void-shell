@@ -1,12 +1,15 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Tooltip } from 'recharts';
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import TimeframeSelector, { Timeframe } from './TimeframeSelector';
 
 interface BuysVsSellsCardProps {
   isExpanded?: boolean;
 }
 
 const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
+  const [timeframe, setTimeframe] = useState<Timeframe>('5m');
+  
   // Sample data for mirror chart
   const chartData = useMemo(() => {
     const data = [];
@@ -14,9 +17,12 @@ const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
       ? ['1d', '6h', '12h', '18h', '24h', '6h', '12h', '18h', '24h', '6h', '12h', 'Now']
       : ['12h', '18h', '24h', '6h', '12h', 'Now'];
     
+    const buysMultiplier = timeframe === '5m' ? 40 : timeframe === '15m' ? 50 : 60;
+    const sellsMultiplier = timeframe === '5m' ? 25 : timeframe === '15m' ? 30 : 35;
+    
     for (let i = 0; i < timeLabels.length; i++) {
-      const buys = Math.floor(Math.random() * 30 + 40);
-      const sells = -(Math.floor(Math.random() * 20 + 25)); // Negative for mirror effect
+      const buys = Math.floor(Math.random() * 30 + buysMultiplier);
+      const sells = -(Math.floor(Math.random() * 20 + sellsMultiplier));
       data.push({ 
         time: timeLabels[i],
         buys,
@@ -24,7 +30,7 @@ const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
       });
     }
     return data;
-  }, [isExpanded]);
+  }, [isExpanded, timeframe]);
 
   const buysVolume = '5.3k';
   const buysCount = 12;
@@ -35,11 +41,16 @@ const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-3 h-full transition-all duration-300 hover:scale-[1.01] flex flex-col overflow-hidden"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-3 h-full transition-all duration-300 hover:scale-[1.01] flex flex-col overflow-hidden relative"
       style={{
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
+      {/* Timeframe Selector */}
+      <div className="absolute top-3 right-3 z-10">
+        <TimeframeSelector value={timeframe} onChange={setTimeframe} />
+      </div>
+
       {isExpanded && (
         <div className="mb-4">
           <h3 className="text-foreground text-lg font-semibold">Transaction Activity</h3>

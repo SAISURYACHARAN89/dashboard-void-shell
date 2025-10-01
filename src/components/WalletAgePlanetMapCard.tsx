@@ -1,23 +1,34 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import TimeframeSelector, { Timeframe } from './TimeframeSelector';
 
 interface WalletAgePlanetMapCardProps {
   isExpanded?: boolean;
 }
 
 const WalletAgePlanetMapCard = ({ isExpanded = false }: WalletAgePlanetMapCardProps) => {
-  const walletData = useMemo(() => ({
-    old: { count: 112, color: '#C97A40', label: 'Old Wallets' },
-    average: { count: 256, color: '#2E86C1', label: 'Average Wallets' },
-    new: { count: 89, color: '#F2A7C6', label: 'New Wallets' }
-  }), []);
+  const [timeframe, setTimeframe] = useState<Timeframe>('5m');
+  
+  const walletData = useMemo(() => {
+    const multiplier = timeframe === '5m' ? 1 : timeframe === '15m' ? 1.2 : 1.4;
+    return {
+      old: { count: Math.round(112 * multiplier), color: '#C97A40', label: 'Old Wallets' },
+      average: { count: Math.round(256 * multiplier), color: '#2E86C1', label: 'Average Wallets' },
+      new: { count: Math.round(89 * multiplier), color: '#F2A7C6', label: 'New Wallets' }
+    };
+  }, [timeframe]);
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full flex flex-col transition-all duration-300 hover:scale-[1.01]"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full flex flex-col transition-all duration-300 hover:scale-[1.01] relative"
       style={{
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
+      {/* Timeframe Selector */}
+      <div className="absolute top-5 right-5 z-10">
+        <TimeframeSelector value={timeframe} onChange={setTimeframe} />
+      </div>
+
       {/* Title */}
       <div className="mb-4">
         <h3 className="text-foreground text-lg font-semibold">Wallet Age Distribution</h3>

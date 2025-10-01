@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, ResponsiveContainer } from 'recharts';
 import { Eye, Heart } from 'lucide-react';
+import TimeframeSelector, { Timeframe } from './TimeframeSelector';
 
 interface MetricCardProps {
   type: 'views' | 'likes';
@@ -12,22 +13,27 @@ interface MetricCardProps {
 
 const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false }: MetricCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [timeframe, setTimeframe] = useState<Timeframe>('5m');
 
   const chartData = useMemo(() => {
     const data = [];
     const timeLabels = isExpanded 
       ? ['1d', '6h', '12h', '18h', '24h', '6h', '12h', '18h', '24h', 'Now']
       : ['6h', '12h', '18h', '24h', 'Now'];
-    let base = value * 0.6;
+    
+    const baseMultiplier = timeframe === '5m' ? 0.6 : timeframe === '15m' ? 0.65 : 0.7;
+    const growthMultiplier = timeframe === '5m' ? 0.02 : timeframe === '15m' ? 0.025 : 0.03;
+    
+    let base = value * baseMultiplier;
     for (let i = 0; i < timeLabels.length; i++) {
-      base += Math.random() * (value * 0.05) + (value * 0.02);
+      base += Math.random() * (value * 0.05) + (value * growthMultiplier);
       data.push({ 
         value: Math.round(base),
         time: timeLabels[i]
       });
     }
     return data;
-  }, [value, isExpanded]);
+  }, [value, isExpanded, timeframe]);
 
   const Icon = type === 'views' ? Eye : Heart;
   const label = type === 'views' ? 'Views' : 'Likes';
@@ -35,13 +41,18 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full transition-all duration-300 hover:scale-[1.02] flex flex-col overflow-hidden"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full transition-all duration-300 hover:scale-[1.02] flex flex-col overflow-hidden relative"
       style={{
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* Timeframe Selector */}
+      <div className="absolute top-5 right-5 z-10">
+        <TimeframeSelector value={timeframe} onChange={setTimeframe} />
+      </div>
+
       {isExpanded && (
         <div className="mb-4">
           <h3 className="text-foreground text-lg font-semibold">

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { Users, UserCheck } from 'lucide-react';
+import TimeframeSelector, { Timeframe } from './TimeframeSelector';
 
 interface BarGraphSectionProps {
   isExpanded?: boolean;
@@ -8,6 +9,7 @@ interface BarGraphSectionProps {
 
 const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
   const [hoveredBar, setHoveredBar] = useState<any>(null);
+  const [timeframe, setTimeframe] = useState<Timeframe>('5m');
 
   // Metrics data
   const memberCount = 1247;
@@ -19,12 +21,16 @@ const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
     const timeLabels = isExpanded
       ? ['8:00', '8:30', '9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30', '10:45', '11:00', '11:30']
       : ['9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30'];
+    
+    const currentBase = timeframe === '5m' ? 30 : timeframe === '15m' ? 40 : 50;
+    const previousBase = timeframe === '5m' ? 25 : timeframe === '15m' ? 35 : 45;
+    
     return timeLabels.map((time) => ({
       time,
-      current: Math.floor(Math.random() * 40 + 30),
-      previous: Math.floor(Math.random() * 35 + 25),
+      current: Math.floor(Math.random() * 40 + currentBase),
+      previous: Math.floor(Math.random() * 35 + previousBase),
     }));
-  }, [isExpanded]);
+  }, [isExpanded, timeframe]);
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -54,11 +60,16 @@ const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-6 h-full transition-all duration-300 hover:scale-[1.01]"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-6 h-full transition-all duration-300 hover:scale-[1.01] relative"
       style={{
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
+      {/* Timeframe Selector */}
+      <div className="absolute top-6 right-6 z-10">
+        <TimeframeSelector value={timeframe} onChange={setTimeframe} />
+      </div>
+
       <div className="flex flex-col h-full">
         {/* Title */}
         <div className="mb-2">
