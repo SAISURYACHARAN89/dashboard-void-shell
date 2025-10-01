@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface EditModalProps {
@@ -11,7 +12,7 @@ interface EditModalProps {
 const EditModal = ({ isOpen, onClose, title, children }: EditModalProps) => {
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <>
       {/* Backdrop with blur */}
       <div 
@@ -42,6 +43,8 @@ const EditModal = ({ isOpen, onClose, title, children }: EditModalProps) => {
       </div>
     </>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 export default EditModal;
