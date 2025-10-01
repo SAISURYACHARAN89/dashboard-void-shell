@@ -23,13 +23,16 @@ const EditModal = ({ isOpen, onClose, title, children }: EditModalProps) => {
       {/* Modal */}
       <div 
         className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] w-[95vw] max-w-[600px] max-h-[80vh] md:w-[60vw] md:max-h-[50vh] bg-[#111111] border border-[#1E1E1E] rounded-[14px] shadow-2xl animate-in zoom-in-95 fade-in duration-200 flex flex-col"
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button - MacBook style */}
+        {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute left-4 top-4 w-3 h-3 rounded-full bg-[#FF5F57] hover:bg-[#FF5F57]/80 transition-colors z-10"
+          className="absolute right-4 top-4 text-muted-foreground hover:text-foreground transition-colors"
           aria-label="Close"
-        />
+        >
+          <X className="h-5 w-5" />
+        </button>
 
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b border-[#1E1E1E]">
