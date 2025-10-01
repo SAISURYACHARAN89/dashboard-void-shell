@@ -298,12 +298,12 @@ const Index = () => {
       case 'holders':
         return (
           <ExpandableCard
-            isExpanded={expandedCards.has('holders')}
-            onToggle={() => toggleCard('holders')}
+            isExpanded={!isLayoutMode && expandedCards.has('holders')}
+            onToggle={() => !isLayoutMode && toggleCard('holders')}
             expandedHeight="600px"
             className="h-40 group"
           >
-            <HoldersGraphCard isExpanded={expandedCards.has('holders')} />
+            <HoldersGraphCard isExpanded={!isLayoutMode && expandedCards.has('holders')} />
           </ExpandableCard>
         );
       case 'metrics-bar':
@@ -322,8 +322,8 @@ const Index = () => {
         return (
           <div className="w-full">
             <ExpandableCard
-              isExpanded={expandedCards.has('views')}
-              onToggle={() => toggleCard('views')}
+              isExpanded={!isLayoutMode && expandedCards.has('views')}
+              onToggle={() => !isLayoutMode && toggleCard('views')}
               expandedHeight="500px"
               className="h-[204px] group"
             >
@@ -332,7 +332,7 @@ const Index = () => {
                 value={240}
                 percentChange={18}
                 chartColor="#B0B0B0"
-                isExpanded={expandedCards.has('views')}
+                isExpanded={!isLayoutMode && expandedCards.has('views')}
               />
             </ExpandableCard>
           </div>
@@ -340,20 +340,20 @@ const Index = () => {
       case 'wallet-age':
         return (
           <ExpandableCard
-            isExpanded={expandedCards.has('wallet-age')}
-            onToggle={() => toggleCard('wallet-age')}
+            isExpanded={!isLayoutMode && expandedCards.has('wallet-age')}
+            onToggle={() => !isLayoutMode && toggleCard('wallet-age')}
             expandedHeight="600px"
             className="h-[300px] group"
           >
-            <WalletAgePlanetMapCard isExpanded={expandedCards.has('wallet-age')} />
+            <WalletAgePlanetMapCard isExpanded={!isLayoutMode && expandedCards.has('wallet-age')} />
           </ExpandableCard>
         );
       case 'likes':
         return (
           <div className="w-full">
             <ExpandableCard
-              isExpanded={expandedCards.has('likes')}
-              onToggle={() => toggleCard('likes')}
+              isExpanded={!isLayoutMode && expandedCards.has('likes')}
+              onToggle={() => !isLayoutMode && toggleCard('likes')}
               expandedHeight="500px"
               className="h-[204px] group"
             >
@@ -362,7 +362,7 @@ const Index = () => {
                 value={65}
                 percentChange={10}
                 chartColor="#B0B0B0"
-                isExpanded={expandedCards.has('likes')}
+                isExpanded={!isLayoutMode && expandedCards.has('likes')}
               />
             </ExpandableCard>
           </div>
@@ -370,23 +370,23 @@ const Index = () => {
       case 'bar-graph':
         return (
           <ExpandableCard
-            isExpanded={expandedCards.has('bar-graph')}
-            onToggle={() => toggleCard('bar-graph')}
+            isExpanded={!isLayoutMode && expandedCards.has('bar-graph')}
+            onToggle={() => !isLayoutMode && toggleCard('bar-graph')}
             expandedHeight="700px"
             className="h-[320px] group"
           >
-            <BarGraphSection isExpanded={expandedCards.has('bar-graph')} />
+            <BarGraphSection isExpanded={!isLayoutMode && expandedCards.has('bar-graph')} />
           </ExpandableCard>
         );
       case 'scatter':
         return (
           <ExpandableCard
-            isExpanded={expandedCards.has('scatter')}
-            onToggle={() => toggleCard('scatter')}
+            isExpanded={!isLayoutMode && expandedCards.has('scatter')}
+            onToggle={() => !isLayoutMode && toggleCard('scatter')}
             expandedHeight="700px"
             className="h-[320px] group"
           >
-            <ScatterPlotCard isExpanded={expandedCards.has('scatter')} />
+            <ScatterPlotCard isExpanded={!isLayoutMode && expandedCards.has('scatter')} />
           </ExpandableCard>
         );
       default:
