@@ -97,7 +97,7 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
         </div>
       </EditModal>
 
-      <div className={`flex ${isExpanded ? 'flex-col' : 'items-center'} gap-6 h-full pt-8`}>
+      <div className={`flex ${isExpanded ? 'flex-col' : 'items-center'} gap-6 h-full pt-12`}>
         {/* Holder info */}
         <div className={`${isExpanded ? 'w-full' : 'flex-1 min-w-0'}`}>
           {/* Percentage change */}
@@ -126,11 +126,11 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
         </div>
 
         {/* Timeline Chart */}
-        <div className={`${isExpanded ? 'w-full flex-1' : 'w-[45%] h-full'} flex items-center`}>
+        <div className={`${isExpanded ? 'w-full flex-1' : 'w-[45%] h-full'} flex items-center pt-4`}>
           <ResponsiveContainer width="100%" height={isExpanded ? '100%' : '85%'}>
             <LineChart 
               data={timelineData}
-              margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+              margin={{ top: 10, right: 5, left: 5, bottom: 5 }}
             >
               <XAxis 
                 dataKey="time"
