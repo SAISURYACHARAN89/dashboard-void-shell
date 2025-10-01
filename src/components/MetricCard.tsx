@@ -7,16 +7,19 @@ interface MetricCardProps {
   value: number;
   percentChange: number;
   chartColor: string;
+  isExpanded?: boolean;
 }
 
-const MetricCard = ({ type, value, percentChange, chartColor }: MetricCardProps) => {
+const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false }: MetricCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const chartData = useMemo(() => {
     const data = [];
-    const timeLabels = ['6h', '12h', '18h', '24h', 'Now'];
+    const timeLabels = isExpanded 
+      ? ['1d', '6h', '12h', '18h', '24h', '6h', '12h', '18h', '24h', 'Now']
+      : ['6h', '12h', '18h', '24h', 'Now'];
     let base = value * 0.6;
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < timeLabels.length; i++) {
       base += Math.random() * (value * 0.05) + (value * 0.02);
       data.push({ 
         value: Math.round(base),
@@ -24,7 +27,7 @@ const MetricCard = ({ type, value, percentChange, chartColor }: MetricCardProps)
       });
     }
     return data;
-  }, [value]);
+  }, [value, isExpanded]);
 
   const Icon = type === 'views' ? Eye : Heart;
   const label = type === 'views' ? 'Views' : 'Likes';
@@ -39,6 +42,16 @@ const MetricCard = ({ type, value, percentChange, chartColor }: MetricCardProps)
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {isExpanded && (
+        <div className="mb-4">
+          <h3 className="text-foreground text-lg font-semibold">
+            {type === 'views' ? 'Views Analytics' : 'Likes Analytics'}
+          </h3>
+          <p className="text-muted-foreground text-xs mt-1">
+            Extended trend history with detailed metrics
+          </p>
+        </div>
+      )}
       <div className="flex flex-col h-full">
         {/* Top section - Icon and Stats */}
         <div className="flex items-start justify-between mb-4">

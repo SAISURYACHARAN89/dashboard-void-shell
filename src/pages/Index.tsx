@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import TradingViewCard from '@/components/TradingViewCard';
 import HoldersGraphCard from '@/components/HoldersGraphCard';
 import BuysVsSellsCard from '@/components/BuysVsSellsCard';
@@ -6,8 +7,14 @@ import HorizontalMetricsBar from '@/components/HorizontalMetricsBar';
 import MetricCard from '@/components/MetricCard';
 import BarGraphSection from '@/components/BarGraphSection';
 import ScatterPlotCard from '@/components/ScatterPlotCard';
+import ExpandableCard from '@/components/ExpandableCard';
 
 const Index = () => {
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+
+  const toggleCard = (cardId: string) => {
+    setExpandedCard(expandedCard === cardId ? null : cardId);
+  };
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div 
@@ -19,62 +26,113 @@ const Index = () => {
           {/* Left Column */}
           <div className="flex flex-col gap-6">
             {/* TradingView Chart */}
-            <div className="h-[600px] lg:h-[484px]">
-              <TradingViewCard />
-            </div>
+            <ExpandableCard
+              isExpanded={expandedCard === 'trading'}
+              onToggle={() => toggleCard('trading')}
+              expandedHeight="800px"
+              className="h-[600px] lg:h-[484px] group"
+            >
+              <TradingViewCard isExpanded={expandedCard === 'trading'} />
+            </ExpandableCard>
             
             {/* Horizontal Metrics Bar */}
-            <div className="h-[60px]">
-              <HorizontalMetricsBar />
-            </div>
+            <ExpandableCard
+              isExpanded={expandedCard === 'metrics'}
+              onToggle={() => toggleCard('metrics')}
+              expandedHeight="400px"
+              className="h-[60px] group"
+            >
+              <HorizontalMetricsBar isExpanded={expandedCard === 'metrics'} />
+            </ExpandableCard>
 
             {/* Views & Likes Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-[204px]">
-              <MetricCard 
-                type="views"
-                value={240}
-                percentChange={18}
-                chartColor="#00FFFF"
-              />
-              <MetricCard 
-                type="likes"
-                value={65}
-                percentChange={10}
-                chartColor="#FF00FF"
-              />
+              <ExpandableCard
+                isExpanded={expandedCard === 'views'}
+                onToggle={() => toggleCard('views')}
+                expandedHeight="500px"
+                className="group"
+              >
+                <MetricCard 
+                  type="views"
+                  value={240}
+                  percentChange={18}
+                  chartColor="#00FFFF"
+                  isExpanded={expandedCard === 'views'}
+                />
+              </ExpandableCard>
+              <ExpandableCard
+                isExpanded={expandedCard === 'likes'}
+                onToggle={() => toggleCard('likes')}
+                expandedHeight="500px"
+                className="group"
+              >
+                <MetricCard 
+                  type="likes"
+                  value={65}
+                  percentChange={10}
+                  chartColor="#FF00FF"
+                  isExpanded={expandedCard === 'likes'}
+                />
+              </ExpandableCard>
             </div>
           </div>
           
           {/* Right side - Stacked cards */}
           <div className="flex flex-col gap-6">
             {/* Holders Graph - Slightly larger compact card */}
-            <div className="h-40">
-              <HoldersGraphCard />
-            </div>
+            <ExpandableCard
+              isExpanded={expandedCard === 'holders'}
+              onToggle={() => toggleCard('holders')}
+              expandedHeight="600px"
+              className="h-40 group"
+            >
+              <HoldersGraphCard isExpanded={expandedCard === 'holders'} />
+            </ExpandableCard>
             
             {/* Buys vs Sells Card */}
-            <div className="h-[300px]">
-              <BuysVsSellsCard />
-            </div>
+            <ExpandableCard
+              isExpanded={expandedCard === 'buys-sells'}
+              onToggle={() => toggleCard('buys-sells')}
+              expandedHeight="700px"
+              className="h-[300px] group"
+            >
+              <BuysVsSellsCard isExpanded={expandedCard === 'buys-sells'} />
+            </ExpandableCard>
 
             {/* Wallet Age Planet Map */}
-            <div className="h-[300px]">
-              <WalletAgePlanetMapCard />
-            </div>
+            <ExpandableCard
+              isExpanded={expandedCard === 'wallet-age'}
+              onToggle={() => toggleCard('wallet-age')}
+              expandedHeight="700px"
+              className="h-[300px] group"
+            >
+              <WalletAgePlanetMapCard isExpanded={expandedCard === 'wallet-age'} />
+            </ExpandableCard>
           </div>
         </div>
 
         {/* Bottom Row - Bar Graph and Scatter Plot */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Bar Graph Section */}
-          <div className="h-[320px]">
-            <BarGraphSection />
-          </div>
+          <ExpandableCard
+            isExpanded={expandedCard === 'bar-graph'}
+            onToggle={() => toggleCard('bar-graph')}
+            expandedHeight="700px"
+            className="h-[320px] group"
+          >
+            <BarGraphSection isExpanded={expandedCard === 'bar-graph'} />
+          </ExpandableCard>
 
           {/* Scatter Plot */}
-          <div className="h-[320px]">
-            <ScatterPlotCard />
-          </div>
+          <ExpandableCard
+            isExpanded={expandedCard === 'scatter'}
+            onToggle={() => toggleCard('scatter')}
+            expandedHeight="700px"
+            className="h-[320px] group"
+          >
+            <ScatterPlotCard isExpanded={expandedCard === 'scatter'} />
+          </ExpandableCard>
         </div>
       </div>
     </div>

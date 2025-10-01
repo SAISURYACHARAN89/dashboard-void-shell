@@ -2,7 +2,11 @@ import { useMemo, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { Users, UserCheck } from 'lucide-react';
 
-const BarGraphSection = () => {
+interface BarGraphSectionProps {
+  isExpanded?: boolean;
+}
+
+const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
   const [hoveredBar, setHoveredBar] = useState<any>(null);
 
   // Metrics data
@@ -12,13 +16,15 @@ const BarGraphSection = () => {
   const uniqueAuthorsChangePercent = -3.2;
 
   const chartData = useMemo(() => {
-    const timeLabels = ['9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30'];
+    const timeLabels = isExpanded
+      ? ['8:00', '8:30', '9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30', '10:45', '11:00', '11:30']
+      : ['9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30'];
     return timeLabels.map((time) => ({
       time,
       current: Math.floor(Math.random() * 40 + 30),
       previous: Math.floor(Math.random() * 35 + 25),
     }));
-  }, []);
+  }, [isExpanded]);
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -57,7 +63,9 @@ const BarGraphSection = () => {
         {/* Title */}
         <div className="mb-2">
           <h3 className="text-foreground text-base font-semibold">Members vs Unique Authors</h3>
-          <p className="text-muted-foreground text-xs mt-0.5">Current vs Previous Refresh</p>
+          <p className="text-muted-foreground text-xs mt-0.5">
+            {isExpanded ? 'Extended historical comparison with detailed refresh data' : 'Current vs Previous Refresh'}
+          </p>
         </div>
 
         {/* Chart */}

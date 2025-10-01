@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 
-const WalletAgePlanetMapCard = () => {
+interface WalletAgePlanetMapCardProps {
+  isExpanded?: boolean;
+}
+
+const WalletAgePlanetMapCard = ({ isExpanded = false }: WalletAgePlanetMapCardProps) => {
   const walletData = useMemo(() => ({
     old: { count: 112, color: '#C97A40', label: 'Old Wallets' },
     average: { count: 256, color: '#2E86C1', label: 'Average Wallets' },
@@ -17,14 +21,16 @@ const WalletAgePlanetMapCard = () => {
       {/* Title */}
       <div className="mb-4">
         <h3 className="text-foreground text-lg font-semibold">Wallet Age Distribution</h3>
-        <p className="text-muted-foreground text-xs mt-1">Based on wallet creation date</p>
+        <p className="text-muted-foreground text-xs mt-1">
+          {isExpanded ? 'Based on wallet creation date • Detailed planetary visualization with orbit animations' : 'Based on wallet creation date'}
+        </p>
       </div>
 
       {/* Planets Container */}
-      <div className="flex-1 flex items-center justify-around gap-4 px-2 sm:px-4">
+      <div className={`flex-1 flex items-center ${isExpanded ? 'justify-evenly' : 'justify-around'} gap-4 px-2 sm:px-4`}>
         {/* Jupiter - Old Wallets */}
         <div className="flex flex-col items-center gap-3 animate-float" style={{ animationDelay: '0s' }}>
-          <div className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32">
+          <div className={`relative ${isExpanded ? 'w-40 h-40 lg:w-48 lg:h-48' : 'w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32'}`}>
             {/* Asteroid Belt */}
             <svg className="absolute inset-0 w-full h-full animate-spin-slow" style={{ animationDuration: '20s' }}>
               <ellipse
@@ -84,7 +90,7 @@ const WalletAgePlanetMapCard = () => {
 
         {/* Earth - Average Wallets */}
         <div className="flex flex-col items-center gap-3 animate-float" style={{ animationDelay: '0.5s' }}>
-          <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28">
+          <div className={isExpanded ? 'w-32 h-32 lg:w-40 lg:h-40' : 'w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28'}>
             <svg className="w-full h-full" viewBox="0 0 100 100">
               <defs>
                 <radialGradient id="earthGradient" cx="35%" cy="35%">
@@ -127,7 +133,7 @@ const WalletAgePlanetMapCard = () => {
 
         {/* Pluto - New Wallets */}
         <div className="flex flex-col items-center gap-3 animate-float" style={{ animationDelay: '1s' }}>
-          <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24">
+          <div className={isExpanded ? 'w-28 h-28 lg:w-36 lg:h-36' : 'w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24'}>
             <svg className="w-full h-full" viewBox="0 0 100 100">
               <defs>
                 <radialGradient id="plutoGradient" cx="35%" cy="35%">

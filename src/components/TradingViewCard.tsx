@@ -1,9 +1,13 @@
 import { useState, useMemo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-type Timeframe = '1M' | '5M' | '15M' | '30M';
+type Timeframe = '1M' | '5M' | '15M' | '30M' | '1H' | '4H' | '1D';
 
-const TradingViewCard = () => {
+interface TradingViewCardProps {
+  isExpanded?: boolean;
+}
+
+const TradingViewCard = ({ isExpanded = false }: TradingViewCardProps) => {
   const [activeTimeframe, setActiveTimeframe] = useState<Timeframe>('5M');
 
   // Generate sample chart data
@@ -27,7 +31,9 @@ const TradingViewCard = () => {
     setActiveTimeframe(timeframe);
   };
 
-  const timeframes: Timeframe[] = ['1M', '5M', '15M', '30M'];
+  const timeframes: Timeframe[] = isExpanded 
+    ? ['1M', '5M', '15M', '30M', '1H', '4H', '1D']
+    : ['1M', '5M', '15M', '30M'];
 
   return (
     <div 
@@ -40,7 +46,9 @@ const TradingViewCard = () => {
       <div className="flex items-start justify-between mb-4">
         <div>
           <h2 className="text-foreground font-semibold text-lg">MBA$ • MC 35.7k</h2>
-          <p className="text-muted-foreground text-sm mt-1">Live Price Chart</p>
+          <p className="text-muted-foreground text-sm mt-1">
+            {isExpanded ? 'Expanded Live Price Chart • Advanced Indicators' : 'Live Price Chart'}
+          </p>
         </div>
         
         {/* Timeframe Toggle - Desktop */}

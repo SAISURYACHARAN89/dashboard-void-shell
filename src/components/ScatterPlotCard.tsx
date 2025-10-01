@@ -9,7 +9,11 @@ interface DataPoint {
   timestamp: string;
 }
 
-const ScatterPlotCard = () => {
+interface ScatterPlotCardProps {
+  isExpanded?: boolean;
+}
+
+const ScatterPlotCard = ({ isExpanded = false }: ScatterPlotCardProps) => {
   const [hoveredPoint, setHoveredPoint] = useState<DataPoint | null>(null);
 
   // Follower segment counts
@@ -38,11 +42,14 @@ const ScatterPlotCard = () => {
 
   const scatterData = useMemo(() => {
     const data: DataPoint[] = [];
-    const times = ['9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30', '10:45'];
-    const authors = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry'];
+    const times = isExpanded
+      ? ['8:00', '8:30', '9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30', '10:45', '11:00', '11:30']
+      : ['9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30', '10:45'];
+    const authors = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry', 'Ivan', 'Julia', 'Kevin', 'Luna'];
     
     // Generate random scatter points
-    for (let i = 0; i < 50; i++) {
+    const pointCount = isExpanded ? 120 : 50;
+    for (let i = 0; i < pointCount; i++) {
       const timeIndex = Math.floor(Math.random() * times.length);
       const authorIndex = Math.floor(Math.random() * authors.length);
       data.push({
@@ -53,7 +60,7 @@ const ScatterPlotCard = () => {
       });
     }
     return data;
-  }, []);
+  }, [isExpanded]);
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length && hoveredPoint) {
@@ -98,7 +105,9 @@ const ScatterPlotCard = () => {
         {/* Title */}
         <div className="mb-2">
           <h3 className="text-foreground text-base font-semibold">Follower Concentration</h3>
-          <p className="text-muted-foreground text-xs mt-0.5">Author distribution by follower count</p>
+          <p className="text-muted-foreground text-xs mt-0.5">
+            {isExpanded ? 'Extended author distribution by follower count with detailed segmentation' : 'Author distribution by follower count'}
+          </p>
         </div>
 
         {/* Scatter Plot */}

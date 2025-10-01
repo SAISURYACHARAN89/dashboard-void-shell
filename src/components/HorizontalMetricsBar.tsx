@@ -8,7 +8,11 @@ interface Metric {
   isPaid?: boolean;
 }
 
-const HorizontalMetricsBar = () => {
+interface HorizontalMetricsBarProps {
+  isExpanded?: boolean;
+}
+
+const HorizontalMetricsBar = ({ isExpanded = false }: HorizontalMetricsBarProps) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const metrics: Metric[] = [
@@ -42,7 +46,13 @@ const HorizontalMetricsBar = () => {
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-0 relative">
+      {isExpanded && (
+        <div className="mb-4">
+          <h3 className="text-foreground text-lg font-semibold">Key Metrics Overview</h3>
+          <p className="text-muted-foreground text-xs mt-1">Comprehensive dashboard metrics with detailed tooltips</p>
+        </div>
+      )}
+      <div className={`grid ${isExpanded ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-2 sm:grid-cols-4'} gap-${isExpanded ? '4' : '0'} relative`}>
         {metrics.map((metric, index) => (
           <div key={metric.label} className="relative">
             {/* Segment */}

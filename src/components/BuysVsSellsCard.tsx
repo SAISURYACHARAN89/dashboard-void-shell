@@ -1,14 +1,20 @@
 import { useMemo } from 'react';
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Tooltip } from 'recharts';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
-const BuysVsSellsCard = () => {
+interface BuysVsSellsCardProps {
+  isExpanded?: boolean;
+}
+
+const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
   // Sample data for mirror chart
   const chartData = useMemo(() => {
     const data = [];
-    const timeLabels = ['12h', '18h', '24h', '6h', '12h', 'Now'];
+    const timeLabels = isExpanded
+      ? ['1d', '6h', '12h', '18h', '24h', '6h', '12h', '18h', '24h', '6h', '12h', 'Now']
+      : ['12h', '18h', '24h', '6h', '12h', 'Now'];
     
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < timeLabels.length; i++) {
       const buys = Math.floor(Math.random() * 30 + 40);
       const sells = -(Math.floor(Math.random() * 20 + 25)); // Negative for mirror effect
       data.push({ 
@@ -18,7 +24,7 @@ const BuysVsSellsCard = () => {
       });
     }
     return data;
-  }, []);
+  }, [isExpanded]);
 
   const buysVolume = '5.3k';
   const buysCount = 12;
@@ -34,9 +40,15 @@ const BuysVsSellsCard = () => {
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
-      <div className="flex items-center gap-5 h-full">
-        {/* Left side - Stat boxes */}
-        <div className="flex flex-col justify-center gap-3 min-w-[140px]">
+      {isExpanded && (
+        <div className="mb-4">
+          <h3 className="text-foreground text-lg font-semibold">Transaction Activity</h3>
+          <p className="text-muted-foreground text-xs mt-1">Extended buy/sell analysis with transaction history</p>
+        </div>
+      )}
+      <div className={`flex ${isExpanded ? 'flex-col' : 'items-center'} gap-5 h-full`}>
+        {/* Stat boxes */}
+        <div className={`flex ${isExpanded ? 'flex-row justify-around w-full' : 'flex-col justify-center'} gap-3 ${isExpanded ? '' : 'min-w-[140px]'}`}>
           {/* Buys Box */}
           <div 
             className="rounded-lg p-3"
@@ -85,9 +97,9 @@ const BuysVsSellsCard = () => {
           </div>
         </div>
 
-        {/* Right side - Mirror Chart */}
-        <div className="flex-1 h-full flex items-center">
-          <ResponsiveContainer width="100%" height="90%">
+        {/* Mirror Chart */}
+        <div className={`${isExpanded ? 'w-full flex-1' : 'flex-1 h-full'} flex items-center`}>
+          <ResponsiveContainer width="100%" height={isExpanded ? '100%' : '90%'}>
             <LineChart 
               data={chartData}
               margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
@@ -108,6 +120,15 @@ const BuysVsSellsCard = () => {
                 domain={[-60, 60]}
                 ticks={[-60, -30, 0, 30, 60]}
               />
+              {isExpanded && (
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#0A0A0A',
+                    border: '1px solid #2ECC71',
+                    borderRadius: '8px',
+                  }}
+                />
+              )}
               <ReferenceLine y={0} stroke="#333333" strokeWidth={1} />
               {/* Buys Line (top half) */}
               <Line 
@@ -115,7 +136,7 @@ const BuysVsSellsCard = () => {
                 dataKey="buys"
                 stroke="#2ECC71"
                 strokeWidth={2}
-                dot={false}
+                dot={isExpanded}
                 animationDuration={300}
               />
               {/* Sells Line (bottom half - negative values) */}
@@ -124,7 +145,7 @@ const BuysVsSellsCard = () => {
                 dataKey="sells"
                 stroke="#E74C3C"
                 strokeWidth={2}
-                dot={false}
+                dot={isExpanded}
                 animationDuration={300}
               />
             </LineChart>
