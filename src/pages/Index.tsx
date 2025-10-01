@@ -643,13 +643,21 @@ const Index = () => {
 
             {/* Bottom Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-              {layout.bottomRow.filter(item => visibleSections.has(item.id)).map((item) => {
+              {layout.bottomRow.filter(item => visibleSections.has(item.id)).map((item, index) => {
                 // Check if this item should expand horizontally
                 const shouldExpandFull = (item.type === 'bar-graph' || item.type === 'scatter') 
                   && expandedCards.has(item.id);
                 
+                // Check if previous item was also expanded
+                const prevItem = index > 0 ? layout.bottomRow.filter(i => visibleSections.has(i.id))[index - 1] : null;
+                const prevWasExpanded = prevItem && (prevItem.type === 'bar-graph' || prevItem.type === 'scatter') 
+                  && expandedCards.has(prevItem.id);
+                
                 return (
-                  <div key={item.id} className={shouldExpandFull ? 'lg:col-span-2' : ''}>
+                  <div 
+                    key={item.id} 
+                    className={`${shouldExpandFull ? 'lg:col-span-2' : ''} ${prevWasExpanded && shouldExpandFull ? 'mt-6' : ''}`}
+                  >
                     {renderCard(item)}
                   </div>
                 );
