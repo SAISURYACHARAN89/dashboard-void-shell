@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, Area, AreaChart } from 'recharts';
 import { TrendingUp, Users, Pencil } from 'lucide-react';
 import TimeframeSelector, { Timeframe } from './TimeframeSelector';
 import EditModal from './EditModal';
@@ -127,11 +127,17 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
 
         {/* Timeline Chart */}
         <div className={`${isExpanded ? 'w-full flex-1' : 'w-[45%] h-full'} flex items-center pt-4`}>
-          <ResponsiveContainer width="100%" height={isExpanded ? '100%' : '85%'}>
-            <LineChart 
+          <ResponsiveContainer width="100%" height={isExpanded ? '100%' : '90%'}>
+            <AreaChart 
               data={timelineData}
-              margin={{ top: 10, right: 5, left: 5, bottom: 0 }}
+              margin={{ top: 10, right: 5, left: 5, bottom: -10 }}
             >
+              <defs>
+                <linearGradient id="holderGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#2ECC71" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#2ECC71" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
               <XAxis 
                 dataKey="time"
                 stroke="#333333"
@@ -158,15 +164,16 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
                   labelStyle={{ color: '#666666' }}
                 />
               )}
-              <Line 
+              <Area 
                 type="monotone"
                 dataKey="value"
-                stroke="#B0B0B0"
-                strokeWidth={2}
+                stroke="#2ECC71"
+                strokeWidth={2.5}
+                fill="url(#holderGradient)"
                 dot={isExpanded}
                 animationDuration={300}
               />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
