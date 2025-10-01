@@ -314,14 +314,9 @@ const Index = () => {
         );
       case 'buys-sells':
         return (
-          <ExpandableCard
-            isExpanded={expandedCards.has('buys-sells')}
-            onToggle={() => toggleCard('buys-sells')}
-            expandedHeight="700px"
-            className="h-[300px] group"
-          >
-            <BuysVsSellsCard isExpanded={expandedCards.has('buys-sells')} />
-          </ExpandableCard>
+          <div className="h-[300px]">
+            <BuysVsSellsCard isExpanded={false} />
+          </div>
         );
       case 'views':
         return (
@@ -347,7 +342,7 @@ const Index = () => {
           <ExpandableCard
             isExpanded={expandedCards.has('wallet-age')}
             onToggle={() => toggleCard('wallet-age')}
-            expandedHeight="700px"
+            expandedHeight="600px"
             className="h-[300px] group"
           >
             <WalletAgePlanetMapCard isExpanded={expandedCards.has('wallet-age')} />
@@ -626,7 +621,7 @@ const Index = () => {
                   }
                   
                   // Check if this item should expand horizontally
-                  const shouldExpandFull = (item.type === 'wallet-age' || item.type === 'bar-graph' || item.type === 'scatter') 
+                  const shouldExpandFull = (item.type === 'bar-graph' || item.type === 'scatter') 
                     && expandedCards.has(item.id);
                   
                   if (shouldExpandFull) {
@@ -650,7 +645,7 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
               {layout.bottomRow.filter(item => visibleSections.has(item.id)).map((item) => {
                 // Check if this item should expand horizontally
-                const shouldExpandFull = (item.type === 'wallet-age' || item.type === 'bar-graph' || item.type === 'scatter') 
+                const shouldExpandFull = (item.type === 'bar-graph' || item.type === 'scatter') 
                   && expandedCards.has(item.id);
                 
                 return (
