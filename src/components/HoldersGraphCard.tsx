@@ -50,7 +50,10 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
       {/* Edit Button & Timeframe Selector */}
       <div className="absolute top-5 right-5 z-10 flex items-center gap-2">
         <button
-          onClick={() => setIsEditOpen(true)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsEditOpen(true);
+          }}
           className="text-[#AAAAAA] hover:text-white transition-colors"
         >
           <Pencil className="h-4 w-4" />
