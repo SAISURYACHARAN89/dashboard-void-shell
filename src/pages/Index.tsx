@@ -110,17 +110,36 @@ const Index = () => {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [layout, setLayout] = useState(DEFAULT_LAYOUT);
   const [isLayoutMode, setIsLayoutMode] = useState(false);
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   // Load layout from localStorage on mount
   useEffect(() => {
     const savedLayout = localStorage.getItem('dashboard-layout');
+    const savedVisible = localStorage.getItem('dashboard-visible-sections');
+    
     if (savedLayout) {
       try {
         setLayout(JSON.parse(savedLayout));
       } catch (error) {
         console.error('Failed to load layout:', error);
       }
+    }
+    
+    if (savedVisible) {
+      try {
+        setVisibleSections(new Set(JSON.parse(savedVisible)));
+      } catch (error) {
+        console.error('Failed to load visible sections:', error);
+      }
+    } else {
+      // Default: all sections visible
+      const allSections = new Set([
+        ...DEFAULT_LAYOUT.leftColumn.map(s => s.id),
+        ...DEFAULT_LAYOUT.rightColumn.map(s => s.id),
+        ...DEFAULT_LAYOUT.bottomRow.map(s => s.id),
+      ]);
+      setVisibleSections(allSections);
     }
   }, []);
 
@@ -161,6 +180,7 @@ const Index = () => {
 
   const saveLayout = () => {
     localStorage.setItem('dashboard-layout', JSON.stringify(layout));
+    localStorage.setItem('dashboard-visible-sections', JSON.stringify([...visibleSections]));
     setIsLayoutMode(false);
     toast({
       title: "Layout Saved",
@@ -170,7 +190,14 @@ const Index = () => {
 
   const resetLayout = () => {
     setLayout(DEFAULT_LAYOUT);
+    const allSections = new Set([
+      ...DEFAULT_LAYOUT.leftColumn.map(s => s.id),
+      ...DEFAULT_LAYOUT.rightColumn.map(s => s.id),
+      ...DEFAULT_LAYOUT.bottomRow.map(s => s.id),
+    ]);
+    setVisibleSections(allSections);
     localStorage.removeItem('dashboard-layout');
+    localStorage.removeItem('dashboard-visible-sections');
     setIsLayoutMode(false);
     toast({
       title: "Layout Reset",
@@ -180,6 +207,18 @@ const Index = () => {
 
   const startLayoutMode = () => {
     setIsLayoutMode(true);
+  };
+
+  const toggleSectionVisibility = (sectionId: string) => {
+    setVisibleSections(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(sectionId)) {
+        newSet.delete(sectionId);
+      } else {
+        newSet.add(sectionId);
+      }
+      return newSet;
+    });
   };
 
   const renderCard = (item: typeof DEFAULT_LAYOUT.leftColumn[0]) => {
@@ -334,8 +373,9 @@ const Index = () => {
           // Layout Mode: Blank canvas with section library
           <div className="relative min-h-[800px] border-2 border-dashed border-muted-foreground/20 rounded-xl p-6">
             {/* Section Library Panel */}
-            <div className="absolute top-4 right-4 w-64 bg-card border border-border rounded-lg p-4 shadow-lg">
+            <div className="absolute top-4 right-4 w-64 bg-card border border-border rounded-lg p-4 shadow-lg max-h-[calc(100vh-200px)] overflow-y-auto">
               <h3 className="text-sm font-semibold mb-3 text-foreground">Available Sections</h3>
+              <p className="text-xs text-muted-foreground mb-4">Click to add/remove sections</p>
               <div className="space-y-2">
                 {[
                   { id: 'trading-view', label: 'TradingView Chart', type: 'trading-view' },
@@ -347,33 +387,48 @@ const Index = () => {
                   { id: 'likes', label: 'Likes', type: 'likes' },
                   { id: 'bar-graph', label: 'Bar Graph', type: 'bar-graph' },
                   { id: 'scatter', label: 'Scatter Plot', type: 'scatter' },
-                ].map((section) => (
-                  <div
-                    key={section.id}
-                    className="p-3 bg-muted rounded border border-border cursor-move hover:bg-accent transition-colors text-xs font-medium"
-                  >
-                    {section.label}
-                  </div>
-                ))}
+                ].map((section) => {
+                  const isVisible = visibleSections.has(section.id);
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => toggleSectionVisibility(section.id)}
+                      className={`w-full p-3 rounded border text-left transition-colors text-xs font-medium ${
+                        isVisible
+                          ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                          : 'bg-muted border-border hover:bg-accent'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span>{section.label}</span>
+                        {isVisible ? (
+                          <span className="text-xs">✓</span>
+                        ) : (
+                          <span className="text-xs opacity-50">+</span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {/* Canvas Area */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pr-72">
               {/* Left Column */}
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-6 min-h-[400px]">
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
                   onDragEnd={handleDragEnd('leftColumn')}
                 >
                   <SortableContext
-                    items={layout.leftColumn.map(item => item.id)}
+                    items={layout.leftColumn.filter(item => visibleSections.has(item.id)).map(item => item.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    {layout.leftColumn.map((item) => {
+                    {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item) => {
                       if (item.type === 'views') {
-                        const likesItem = layout.leftColumn.find(i => i.type === 'likes');
+                        const likesItem = layout.leftColumn.find(i => i.type === 'likes' && visibleSections.has(i.id));
                         if (likesItem) {
                           return (
                             <div key="views-likes-grid" className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -401,17 +456,17 @@ const Index = () => {
               </div>
               
               {/* Right Column */}
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-6 min-h-[400px]">
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
                   onDragEnd={handleDragEnd('rightColumn')}
                 >
                   <SortableContext
-                    items={layout.rightColumn.map(item => item.id)}
+                    items={layout.rightColumn.filter(item => visibleSections.has(item.id)).map(item => item.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    {layout.rightColumn.map((item) => (
+                    {layout.rightColumn.filter(item => visibleSections.has(item.id)).map((item) => (
                       <SortableCard key={item.id} id={item.id}>
                         {renderCard(item)}
                       </SortableCard>
@@ -422,17 +477,17 @@ const Index = () => {
             </div>
 
             {/* Bottom Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 pr-72">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 pr-72 min-h-[200px]">
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
                 onDragEnd={handleDragEnd('bottomRow')}
               >
                 <SortableContext
-                  items={layout.bottomRow.map(item => item.id)}
+                  items={layout.bottomRow.filter(item => visibleSections.has(item.id)).map(item => item.id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  {layout.bottomRow.map((item) => (
+                  {layout.bottomRow.filter(item => visibleSections.has(item.id)).map((item) => (
                     <SortableCard key={item.id} id={item.id}>
                       {renderCard(item)}
                     </SortableCard>
@@ -448,9 +503,9 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left Column */}
               <div className="flex flex-col gap-6">
-                {layout.leftColumn.map((item) => {
+                {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item) => {
                   if (item.type === 'views') {
-                    const likesItem = layout.leftColumn.find(i => i.type === 'likes');
+                    const likesItem = layout.leftColumn.find(i => i.type === 'likes' && visibleSections.has(i.id));
                     if (likesItem) {
                       return (
                         <div key="views-likes-grid" className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -473,7 +528,7 @@ const Index = () => {
               
               {/* Right Column */}
               <div className="flex flex-col gap-6">
-                {layout.rightColumn.map((item) => {
+                {layout.rightColumn.filter(item => visibleSections.has(item.id)).map((item) => {
                   // Check if this item should expand horizontally
                   const shouldExpandFull = (item.type === 'wallet-age' || item.type === 'bar-graph' || item.type === 'scatter') 
                     && expandedCards.has(item.id);
@@ -497,7 +552,7 @@ const Index = () => {
 
             {/* Bottom Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-              {layout.bottomRow.map((item) => {
+              {layout.bottomRow.filter(item => visibleSections.has(item.id)).map((item) => {
                 // Check if this item should expand horizontally
                 const shouldExpandFull = (item.type === 'wallet-age' || item.type === 'bar-graph' || item.type === 'scatter') 
                   && expandedCards.has(item.id);
