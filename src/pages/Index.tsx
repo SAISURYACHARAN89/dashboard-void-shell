@@ -22,7 +22,7 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  rectSortingStrategy,
+  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -30,18 +30,24 @@ import { Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
-// Define the default layout
-const DEFAULT_LAYOUT = [
-  { id: 'trading-view', type: 'trading-view' },
-  { id: 'holders', type: 'holders' },
-  { id: 'metrics-bar', type: 'metrics-bar' },
-  { id: 'buys-sells', type: 'buys-sells' },
-  { id: 'views', type: 'views' },
-  { id: 'wallet-age', type: 'wallet-age' },
-  { id: 'likes', type: 'likes' },
-  { id: 'bar-graph', type: 'bar-graph' },
-  { id: 'scatter', type: 'scatter' },
-];
+// Define the default layout with columns
+const DEFAULT_LAYOUT = {
+  leftColumn: [
+    { id: 'trading-view', type: 'trading-view' },
+    { id: 'metrics-bar', type: 'metrics-bar' },
+    { id: 'views', type: 'views' },
+    { id: 'likes', type: 'likes' },
+  ],
+  rightColumn: [
+    { id: 'holders', type: 'holders' },
+    { id: 'buys-sells', type: 'buys-sells' },
+    { id: 'wallet-age', type: 'wallet-age' },
+  ],
+  bottomRow: [
+    { id: 'bar-graph', type: 'bar-graph' },
+    { id: 'scatter', type: 'scatter' },
+  ],
+};
 
 // Sortable card wrapper component
 const SortableCard = ({ 
@@ -117,14 +123,18 @@ const Index = () => {
     })
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = (column: 'leftColumn' | 'rightColumn' | 'bottomRow') => (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setLayout((items) => {
+      setLayout((prevLayout) => {
+        const items = prevLayout[column];
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+        return {
+          ...prevLayout,
+          [column]: arrayMove(items, oldIndex, newIndex),
+        };
       });
     }
   };
@@ -146,7 +156,7 @@ const Index = () => {
     });
   };
 
-  const renderCard = (item: typeof DEFAULT_LAYOUT[0]) => {
+  const renderCard = (item: typeof DEFAULT_LAYOUT.leftColumn[0]) => {
     switch (item.type) {
       case 'trading-view':
         return (
@@ -253,6 +263,7 @@ const Index = () => {
         return null;
     }
   };
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div 
@@ -281,25 +292,90 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Dashboard Grid with Drag & Drop */}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={layout.map(item => item.id)}
-            strategy={rectSortingStrategy}
+        {/* Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="flex flex-col gap-6">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd('leftColumn')}
+            >
+              <SortableContext
+                items={layout.leftColumn.map(item => item.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {layout.leftColumn.map((item) => {
+                  // Handle views and likes as a grid
+                  if (item.type === 'views') {
+                    const likesItem = layout.leftColumn.find(i => i.type === 'likes');
+                    if (likesItem) {
+                      return (
+                        <div key="views-likes-grid" className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                          <SortableCard id={item.id}>
+                            {renderCard(item)}
+                          </SortableCard>
+                          <SortableCard id={likesItem.id}>
+                            {renderCard(likesItem)}
+                          </SortableCard>
+                        </div>
+                      );
+                    }
+                  }
+                  if (item.type === 'likes') {
+                    // Skip likes as it's rendered with views
+                    return null;
+                  }
+                  return (
+                    <SortableCard key={item.id} id={item.id}>
+                      {renderCard(item)}
+                    </SortableCard>
+                  );
+                })}
+              </SortableContext>
+            </DndContext>
+          </div>
+          
+          {/* Right Column */}
+          <div className="flex flex-col gap-6">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd('rightColumn')}
+            >
+              <SortableContext
+                items={layout.rightColumn.map(item => item.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {layout.rightColumn.map((item) => (
+                  <SortableCard key={item.id} id={item.id}>
+                    {renderCard(item)}
+                  </SortableCard>
+                ))}
+              </SortableContext>
+            </DndContext>
+          </div>
+        </div>
+
+        {/* Bottom Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd('bottomRow')}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {layout.map((item) => (
+            <SortableContext
+              items={layout.bottomRow.map(item => item.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {layout.bottomRow.map((item) => (
                 <SortableCard key={item.id} id={item.id}>
                   {renderCard(item)}
                 </SortableCard>
               ))}
-            </div>
-          </SortableContext>
-        </DndContext>
+            </SortableContext>
+          </DndContext>
+        </div>
       </div>
     </div>
   );
