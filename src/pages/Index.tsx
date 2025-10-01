@@ -236,14 +236,16 @@ const Index = () => {
           </ExpandableCard>
         );
       case 'wallet-age':
+        // Don't render if expanded (shown in full-width section)
+        if (expandedCards.has('wallet-age')) return null;
         return (
           <ExpandableCard
-            isExpanded={expandedCards.has('wallet-age')}
+            isExpanded={false}
             onToggle={() => toggleCard('wallet-age')}
             expandedHeight="700px"
             className="h-[300px] group"
           >
-            <WalletAgePlanetMapCard isExpanded={expandedCards.has('wallet-age')} />
+            <WalletAgePlanetMapCard isExpanded={false} />
           </ExpandableCard>
         );
       case 'likes':
@@ -264,25 +266,29 @@ const Index = () => {
           </ExpandableCard>
         );
       case 'bar-graph':
+        // Don't render if expanded (shown in full-width section)
+        if (expandedCards.has('bar-graph')) return null;
         return (
           <ExpandableCard
-            isExpanded={expandedCards.has('bar-graph')}
+            isExpanded={false}
             onToggle={() => toggleCard('bar-graph')}
             expandedHeight="700px"
             className="h-[320px] group"
           >
-            <BarGraphSection isExpanded={expandedCards.has('bar-graph')} />
+            <BarGraphSection isExpanded={false} />
           </ExpandableCard>
         );
       case 'scatter':
+        // Don't render if expanded (shown in full-width section)
+        if (expandedCards.has('scatter')) return null;
         return (
           <ExpandableCard
-            isExpanded={expandedCards.has('scatter')}
+            isExpanded={false}
             onToggle={() => toggleCard('scatter')}
             expandedHeight="700px"
             className="h-[320px] group"
           >
-            <ScatterPlotCard isExpanded={expandedCards.has('scatter')} />
+            <ScatterPlotCard isExpanded={false} />
           </ExpandableCard>
         );
       default:
@@ -444,6 +450,42 @@ const Index = () => {
         ) : (
           // Normal Mode: No drag handles, just click to expand
           <>
+            {/* Expanded Full-Width Cards */}
+            {(expandedCards.has('wallet-age') || expandedCards.has('bar-graph') || expandedCards.has('scatter')) && (
+              <div className="mb-6">
+                {expandedCards.has('wallet-age') && (
+                  <ExpandableCard
+                    isExpanded={true}
+                    onToggle={() => toggleCard('wallet-age')}
+                    expandedHeight="700px"
+                    className="h-[700px] group"
+                  >
+                    <WalletAgePlanetMapCard isExpanded={true} />
+                  </ExpandableCard>
+                )}
+                {expandedCards.has('bar-graph') && (
+                  <ExpandableCard
+                    isExpanded={true}
+                    onToggle={() => toggleCard('bar-graph')}
+                    expandedHeight="700px"
+                    className="h-[700px] group"
+                  >
+                    <BarGraphSection isExpanded={true} />
+                  </ExpandableCard>
+                )}
+                {expandedCards.has('scatter') && (
+                  <ExpandableCard
+                    isExpanded={true}
+                    onToggle={() => toggleCard('scatter')}
+                    expandedHeight="700px"
+                    className="h-[700px] group"
+                  >
+                    <ScatterPlotCard isExpanded={true} />
+                  </ExpandableCard>
+                )}
+              </div>
+            )}
+
             {/* Dashboard Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left Column */}
