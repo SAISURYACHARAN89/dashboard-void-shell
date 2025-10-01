@@ -130,7 +130,7 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
           <ResponsiveContainer width="100%" height={isExpanded ? '100%' : '85%'}>
             <LineChart 
               data={timelineData}
-              margin={{ top: 10, right: 5, left: 5, bottom: 15 }}
+              margin={{ top: 10, right: 5, left: 5, bottom: 0 }}
             >
               <XAxis 
                 dataKey="time"
