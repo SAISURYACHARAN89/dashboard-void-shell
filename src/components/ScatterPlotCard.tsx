@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Users2, Users, UserPlus, Crown, Pencil } from 'lucide-react';
 import TimeframeSelector, { Timeframe } from './TimeframeSelector';
-import EditPanel from './EditPanel';
+import EditModal from './EditModal';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
@@ -22,6 +22,7 @@ const ScatterPlotCard = ({ isExpanded = false }: ScatterPlotCardProps) => {
   const [hoveredPoint, setHoveredPoint] = useState<DataPoint | null>(null);
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [followerAlert, setFollowerAlert] = useState('10000');
   const [minFollowers, setMinFollowers] = useState('1000');
 
@@ -120,22 +121,22 @@ const ScatterPlotCard = ({ isExpanded = false }: ScatterPlotCardProps) => {
             e.stopPropagation();
             setIsEditOpen(true);
           }}
-          className="text-[#AAAAAA] hover:text-white transition-colors"
+          className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
         >
           <Pencil className="h-4 w-4" />
         </button>
         <TimeframeSelector value={timeframe} onChange={setTimeframe} />
       </div>
 
-      <EditPanel
+      <EditModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        title="Edit Scatter Plot Filters"
+        title="Edit Scatter Plot Alerts"
       >
         <div className="space-y-4">
           <div>
             <Label htmlFor="follower-alert" className="text-sm text-muted-foreground">
-              Alert if author with more than X followers posts
+              Alert when author with followers exceeds
             </Label>
             <Input
               id="follower-alert"
@@ -147,7 +148,7 @@ const ScatterPlotCard = ({ isExpanded = false }: ScatterPlotCardProps) => {
           </div>
           <div>
             <Label htmlFor="min-followers" className="text-sm text-muted-foreground">
-              Filter by minimum follower count
+              Minimum follower count filter
             </Label>
             <Input
               id="min-followers"
@@ -157,11 +158,11 @@ const ScatterPlotCard = ({ isExpanded = false }: ScatterPlotCardProps) => {
               className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
             />
           </div>
-          <Button className="w-full" onClick={() => setIsEditOpen(false)}>
+          <Button className="w-full" onClick={() => { setIsSaved(true); setIsEditOpen(false); }}>
             Save Changes
           </Button>
         </div>
-      </EditPanel>
+      </EditModal>
 
       <div className="flex flex-col h-full">
         {/* Title */}

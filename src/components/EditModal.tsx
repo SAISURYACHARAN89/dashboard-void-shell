@@ -1,0 +1,47 @@
+import { ReactNode } from 'react';
+import { X } from 'lucide-react';
+
+interface EditModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: ReactNode;
+}
+
+const EditModal = ({ isOpen, onClose, title, children }: EditModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <>
+      {/* Backdrop with blur */}
+      <div 
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-in fade-in duration-200"
+        onClick={onClose}
+      />
+      
+      {/* Modal */}
+      <div 
+        className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-50 w-[95vw] max-w-[600px] max-h-[80vh] md:w-[60vw] md:max-h-[50vh] bg-[#111111] border border-[#1E1E1E] rounded-[14px] shadow-2xl animate-in zoom-in-95 fade-in duration-200 flex flex-col"
+      >
+        {/* Close button - MacBook style */}
+        <button
+          onClick={onClose}
+          className="absolute left-4 top-4 w-3 h-3 rounded-full bg-[#FF5F57] hover:bg-[#FF5F57]/80 transition-colors z-10"
+          aria-label="Close"
+        />
+
+        {/* Header */}
+        <div className="px-6 pt-6 pb-4 border-b border-[#1E1E1E]">
+          <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 overflow-y-auto flex-1">
+          {children}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default EditModal;

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Tooltip } from 'recharts';
 import { TrendingUp, TrendingDown, Pencil } from 'lucide-react';
 import TimeframeSelector, { Timeframe } from './TimeframeSelector';
-import EditPanel from './EditPanel';
+import EditModal from './EditModal';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
@@ -14,7 +14,9 @@ interface BuysVsSellsCardProps {
 const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [buysThreshold, setBuysThreshold] = useState('10');
+  const [netFlipAlert, setNetFlipAlert] = useState(true);
   
   // Sample data for mirror chart
   const chartData = useMemo(() => {
@@ -59,25 +61,25 @@ const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
             e.stopPropagation();
             setIsEditOpen(true);
           }}
-          className="text-[#AAAAAA] hover:text-white transition-colors"
+          className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
         >
           <Pencil className="h-4 w-4" />
         </button>
         <TimeframeSelector value={timeframe} onChange={setTimeframe} />
       </div>
 
-      <EditPanel
+      <EditModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         title="Edit Buys vs Sells Alerts"
       >
         <div className="space-y-4">
           <div>
-            <Label htmlFor="buys-alert" className="text-sm text-muted-foreground">
+            <Label htmlFor="buys-threshold" className="text-sm text-muted-foreground">
               Alert if buys exceed sells by (%)
             </Label>
             <Input
-              id="buys-alert"
+              id="buys-threshold"
               type="number"
               value={buysThreshold}
               onChange={(e) => setBuysThreshold(e.target.value)}
@@ -85,19 +87,22 @@ const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
             />
           </div>
           <div>
-            <Label className="text-sm text-muted-foreground">
-              Alert when net volume flips negative
+            <Label htmlFor="net-flip" className="text-sm text-muted-foreground">
+              Alert on net flip to negative
             </Label>
-            <div className="mt-2 flex items-center gap-2">
-              <input type="checkbox" id="net-flip" className="rounded" />
-              <label htmlFor="net-flip" className="text-sm">Enable alert</label>
-            </div>
+            <Input
+              id="net-flip"
+              type="checkbox"
+              checked={netFlipAlert}
+              onChange={(e) => setNetFlipAlert(e.target.checked)}
+              className="mt-2 w-5 h-5"
+            />
           </div>
-          <Button className="w-full" onClick={() => setIsEditOpen(false)}>
+          <Button className="w-full" onClick={() => { setIsSaved(true); setIsEditOpen(false); }}>
             Save Changes
           </Button>
         </div>
-      </EditPanel>
+      </EditModal>
 
       {isExpanded && (
         <div className="mb-4">
