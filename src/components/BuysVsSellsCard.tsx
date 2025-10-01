@@ -35,7 +35,7 @@ const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
 
   return (
     <div 
-      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-3 h-full transition-all duration-300 hover:scale-[1.01]"
+      className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-3 h-full transition-all duration-300 hover:scale-[1.01] flex flex-col overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
@@ -46,7 +46,7 @@ const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
           <p className="text-muted-foreground text-xs mt-1">Extended buy/sell analysis with transaction history</p>
         </div>
       )}
-      <div className={`flex ${isExpanded ? 'flex-col' : 'items-center'} gap-5 h-full`}>
+      <div className={`flex ${isExpanded ? 'flex-col' : 'items-center'} gap-5 flex-1 min-h-0`}>
         {/* Stat boxes */}
         <div className={`flex ${isExpanded ? 'flex-row justify-around w-full' : 'flex-col justify-center'} gap-3 ${isExpanded ? '' : 'min-w-[140px]'}`}>
           {/* Buys Box */}
@@ -98,8 +98,8 @@ const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
         </div>
 
         {/* Mirror Chart */}
-        <div className={`${isExpanded ? 'w-full flex-1' : 'flex-1 h-full'} flex items-center`}>
-          <ResponsiveContainer width="100%" height={isExpanded ? '100%' : '90%'}>
+        <div className={`${isExpanded ? 'w-full flex-1 min-h-0' : 'flex-1 h-full'} flex items-center overflow-hidden`}>
+          <ResponsiveContainer width="100%" height="100%">
             <LineChart 
               data={chartData}
               margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
