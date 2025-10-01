@@ -325,20 +325,22 @@ const Index = () => {
         );
       case 'views':
         return (
-          <ExpandableCard
-            isExpanded={expandedCards.has('views')}
-            onToggle={() => toggleCard('views')}
-            expandedHeight="500px"
-            className="h-[204px] group"
-          >
-            <MetricCard 
-              type="views"
-              value={240}
-              percentChange={18}
-              chartColor="#B0B0B0"
+          <div className="w-full">
+            <ExpandableCard
               isExpanded={expandedCards.has('views')}
-            />
-          </ExpandableCard>
+              onToggle={() => toggleCard('views')}
+              expandedHeight="500px"
+              className="h-[204px] group"
+            >
+              <MetricCard 
+                type="views"
+                value={240}
+                percentChange={18}
+                chartColor="#B0B0B0"
+                isExpanded={expandedCards.has('views')}
+              />
+            </ExpandableCard>
+          </div>
         );
       case 'wallet-age':
         return (
@@ -353,20 +355,22 @@ const Index = () => {
         );
       case 'likes':
         return (
-          <ExpandableCard
-            isExpanded={expandedCards.has('likes')}
-            onToggle={() => toggleCard('likes')}
-            expandedHeight="500px"
-            className="h-[204px] group"
-          >
-            <MetricCard 
-              type="likes"
-              value={65}
-              percentChange={10}
-              chartColor="#B0B0B0"
+          <div className="w-full">
+            <ExpandableCard
               isExpanded={expandedCards.has('likes')}
-            />
-          </ExpandableCard>
+              onToggle={() => toggleCard('likes')}
+              expandedHeight="500px"
+              className="h-[204px] group"
+            >
+              <MetricCard 
+                type="likes"
+                value={65}
+                percentChange={10}
+                chartColor="#B0B0B0"
+                isExpanded={expandedCards.has('likes')}
+              />
+            </ExpandableCard>
+          </div>
         );
       case 'bar-graph':
         return (
@@ -497,20 +501,64 @@ const Index = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pr-72">
                   {/* Left Column */}
                   <div className="flex flex-col gap-6 min-h-[400px]">
-                    {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item) => (
-                      <SortableCard key={item.id} id={item.id}>
-                        {renderCard(item)}
-                      </SortableCard>
-                    ))}
+                    {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item, index, array) => {
+                      // Check if this is Views and if Likes is also in the same column
+                      if (item.type === 'views') {
+                        const likesItem = array.find(i => i.type === 'likes');
+                        if (likesItem) {
+                          return (
+                            <div key="views-likes-grid" className="grid grid-cols-2 gap-6">
+                              <SortableCard id={item.id}>
+                                {renderCard(item)}
+                              </SortableCard>
+                              <SortableCard id={likesItem.id}>
+                                {renderCard(likesItem)}
+                              </SortableCard>
+                            </div>
+                          );
+                        }
+                      }
+                      // Skip Likes if it's already rendered with Views
+                      if (item.type === 'likes' && array.find(i => i.type === 'views')) {
+                        return null;
+                      }
+                      return (
+                        <SortableCard key={item.id} id={item.id}>
+                          {renderCard(item)}
+                        </SortableCard>
+                      );
+                    })}
                   </div>
                   
                   {/* Right Column */}
                   <div className="flex flex-col gap-6 min-h-[400px]">
-                    {layout.rightColumn.filter(item => visibleSections.has(item.id)).map((item) => (
-                      <SortableCard key={item.id} id={item.id}>
-                        {renderCard(item)}
-                      </SortableCard>
-                    ))}
+                    {layout.rightColumn.filter(item => visibleSections.has(item.id)).map((item, index, array) => {
+                      // Check if this is Views and if Likes is also in the same column
+                      if (item.type === 'views') {
+                        const likesItem = array.find(i => i.type === 'likes');
+                        if (likesItem) {
+                          return (
+                            <div key="views-likes-grid" className="grid grid-cols-2 gap-6">
+                              <SortableCard id={item.id}>
+                                {renderCard(item)}
+                              </SortableCard>
+                              <SortableCard id={likesItem.id}>
+                                {renderCard(likesItem)}
+                              </SortableCard>
+                            </div>
+                          );
+                        }
+                      }
+                      // Skip Likes if it's already rendered with Views
+                      if (item.type === 'likes' && array.find(i => i.type === 'views')) {
+                        return null;
+                      }
+                      return (
+                        <SortableCard key={item.id} id={item.id}>
+                          {renderCard(item)}
+                        </SortableCard>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -532,16 +580,51 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left Column */}
               <div className="flex flex-col gap-6">
-                {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item) => (
-                  <div key={item.id}>
-                    {renderCard(item)}
-                  </div>
-                ))}
+                {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item, index, array) => {
+                  // Check if this is Views and if Likes is also in the same column
+                  if (item.type === 'views') {
+                    const likesItem = array.find(i => i.type === 'likes');
+                    if (likesItem) {
+                      return (
+                        <div key="views-likes-grid" className="grid grid-cols-2 gap-6">
+                          {renderCard(item)}
+                          {renderCard(likesItem)}
+                        </div>
+                      );
+                    }
+                  }
+                  // Skip Likes if it's already rendered with Views
+                  if (item.type === 'likes' && array.find(i => i.type === 'views')) {
+                    return null;
+                  }
+                  return (
+                    <div key={item.id}>
+                      {renderCard(item)}
+                    </div>
+                  );
+                })}
               </div>
               
               {/* Right Column */}
               <div className="flex flex-col gap-6">
-                {layout.rightColumn.filter(item => visibleSections.has(item.id)).map((item) => {
+                {layout.rightColumn.filter(item => visibleSections.has(item.id)).map((item, index, array) => {
+                  // Check if this is Views and if Likes is also in the same column
+                  if (item.type === 'views') {
+                    const likesItem = array.find(i => i.type === 'likes');
+                    if (likesItem) {
+                      return (
+                        <div key="views-likes-grid" className="grid grid-cols-2 gap-6">
+                          {renderCard(item)}
+                          {renderCard(likesItem)}
+                        </div>
+                      );
+                    }
+                  }
+                  // Skip Likes if it's already rendered with Views
+                  if (item.type === 'likes' && array.find(i => i.type === 'views')) {
+                    return null;
+                  }
+                  
                   // Check if this item should expand horizontally
                   const shouldExpandFull = (item.type === 'wallet-age' || item.type === 'bar-graph' || item.type === 'scatter') 
                     && expandedCards.has(item.id);
