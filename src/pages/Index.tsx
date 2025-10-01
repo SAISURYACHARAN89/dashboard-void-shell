@@ -78,10 +78,29 @@ const SortableCard = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`${className} ${isDragging ? 'z-50' : ''}`}
-      {...attributes}
-      {...listeners}
+      className={`${className} ${isDragging ? 'z-50' : ''} relative group/sortable`}
     >
+      {/* Drag Handle - Only visible on hover */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="absolute -left-2 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover/sortable:opacity-100 transition-opacity cursor-grab active:cursor-grabbing bg-muted border border-border rounded p-1.5 hover:bg-accent"
+      >
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          className="text-muted-foreground"
+        >
+          <circle cx="3" cy="3" r="1" fill="currentColor" />
+          <circle cx="9" cy="3" r="1" fill="currentColor" />
+          <circle cx="3" cy="6" r="1" fill="currentColor" />
+          <circle cx="9" cy="6" r="1" fill="currentColor" />
+          <circle cx="3" cy="9" r="1" fill="currentColor" />
+          <circle cx="9" cy="9" r="1" fill="currentColor" />
+        </svg>
+      </div>
       {children}
     </div>
   );

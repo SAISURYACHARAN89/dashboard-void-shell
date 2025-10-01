@@ -34,13 +34,7 @@ const ExpandableCard = ({
           h-full transition-all duration-500 cursor-pointer
           ${isExpanded ? 'scale-[1.01]' : ''}
         `}
-        onClick={(e) => {
-          // Prevent expand on drag
-          if ((e.target as HTMLElement).closest('[data-no-drag]')) {
-            return;
-          }
-          onToggle();
-        }}
+        onClick={onToggle}
       >
         {children}
       </div>
