@@ -1,5 +1,10 @@
 import { useMemo, useState } from 'react';
+import { Pencil } from 'lucide-react';
 import TimeframeSelector, { Timeframe } from './TimeframeSelector';
+import EditPanel from './EditPanel';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Button } from './ui/button';
 
 interface WalletAgePlanetMapCardProps {
   isExpanded?: boolean;
@@ -7,6 +12,8 @@ interface WalletAgePlanetMapCardProps {
 
 const WalletAgePlanetMapCard = ({ isExpanded = false }: WalletAgePlanetMapCardProps) => {
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [newWalletThreshold, setNewWalletThreshold] = useState('100');
   
   const walletData = useMemo(() => {
     const multiplier = timeframe === '5m' ? 1 : timeframe === '15m' ? 1.2 : 1.4;
@@ -24,10 +31,51 @@ const WalletAgePlanetMapCard = ({ isExpanded = false }: WalletAgePlanetMapCardPr
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
-      {/* Timeframe Selector */}
-      <div className="absolute top-5 right-5 z-10">
+      {/* Edit Button & Timeframe Selector */}
+      <div className="absolute top-5 right-5 z-10 flex items-center gap-2">
+        <button
+          onClick={() => setIsEditOpen(true)}
+          className="text-[#AAAAAA] hover:text-white transition-colors"
+        >
+          <Pencil className="h-4 w-4" />
+        </button>
         <TimeframeSelector value={timeframe} onChange={setTimeframe} />
       </div>
+
+      <EditPanel
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        title="Edit Wallet Age Alerts"
+      >
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="new-wallet-alert" className="text-sm text-muted-foreground">
+              Alert when new wallets exceed
+            </Label>
+            <Input
+              id="new-wallet-alert"
+              type="number"
+              value={newWalletThreshold}
+              onChange={(e) => setNewWalletThreshold(e.target.value)}
+              className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
+            />
+          </div>
+          <div>
+            <Label htmlFor="old-wallet-drop" className="text-sm text-muted-foreground">
+              Alert on sharp drop in old wallets (%)
+            </Label>
+            <Input
+              id="old-wallet-drop"
+              type="number"
+              placeholder="e.g., 20"
+              className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
+            />
+          </div>
+          <Button className="w-full" onClick={() => setIsEditOpen(false)}>
+            Save Changes
+          </Button>
+        </div>
+      </EditPanel>
 
       {/* Title */}
       <div className="mb-4">

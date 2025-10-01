@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, ResponsiveContainer } from 'recharts';
-import { Eye, Heart } from 'lucide-react';
+import { Eye, Heart, Pencil } from 'lucide-react';
 import TimeframeSelector, { Timeframe } from './TimeframeSelector';
+import EditPanel from './EditPanel';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Button } from './ui/button';
 
 interface MetricCardProps {
   type: 'views' | 'likes';
@@ -14,6 +18,9 @@ interface MetricCardProps {
 const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false }: MetricCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [viewsThreshold, setViewsThreshold] = useState('10');
+  const [likesThreshold, setLikesThreshold] = useState('5');
 
   const chartData = useMemo(() => {
     const data = [];
@@ -48,10 +55,51 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Timeframe Selector */}
-      <div className="absolute top-5 right-5 z-10">
+      {/* Edit Button & Timeframe Selector */}
+      <div className="absolute top-5 right-5 z-10 flex items-center gap-2">
+        <button
+          onClick={() => setIsEditOpen(true)}
+          className="text-[#AAAAAA] hover:text-white transition-colors"
+        >
+          <Pencil className="h-4 w-4" />
+        </button>
         <TimeframeSelector value={timeframe} onChange={setTimeframe} />
       </div>
+
+      <EditPanel
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        title={`Edit ${type === 'views' ? 'Views' : 'Likes'} Alerts`}
+      >
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="increase-alert" className="text-sm text-muted-foreground">
+              Alert if {type} increase by (%)
+            </Label>
+            <Input
+              id="increase-alert"
+              type="number"
+              value={type === 'views' ? viewsThreshold : likesThreshold}
+              onChange={(e) => type === 'views' ? setViewsThreshold(e.target.value) : setLikesThreshold(e.target.value)}
+              className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
+            />
+          </div>
+          <div>
+            <Label htmlFor="decrease-alert" className="text-sm text-muted-foreground">
+              Alert if {type} decrease by (%)
+            </Label>
+            <Input
+              id="decrease-alert"
+              type="number"
+              placeholder="e.g., 5"
+              className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
+            />
+          </div>
+          <Button className="w-full" onClick={() => setIsEditOpen(false)}>
+            Save Changes
+          </Button>
+        </div>
+      </EditPanel>
 
       {isExpanded && (
         <div className="mb-4">

@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Tooltip } from 'recharts';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Pencil } from 'lucide-react';
 import TimeframeSelector, { Timeframe } from './TimeframeSelector';
+import EditPanel from './EditPanel';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Button } from './ui/button';
 
 interface BuysVsSellsCardProps {
   isExpanded?: boolean;
@@ -9,6 +13,8 @@ interface BuysVsSellsCardProps {
 
 const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [buysThreshold, setBuysThreshold] = useState('10');
   
   // Sample data for mirror chart
   const chartData = useMemo(() => {
@@ -46,10 +52,49 @@ const BuysVsSellsCard = ({ isExpanded = false }: BuysVsSellsCardProps) => {
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
-      {/* Timeframe Selector */}
-      <div className="absolute top-3 right-3 z-10">
+      {/* Edit Button & Timeframe Selector */}
+      <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+        <button
+          onClick={() => setIsEditOpen(true)}
+          className="text-[#AAAAAA] hover:text-white transition-colors"
+        >
+          <Pencil className="h-4 w-4" />
+        </button>
         <TimeframeSelector value={timeframe} onChange={setTimeframe} />
       </div>
+
+      <EditPanel
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        title="Edit Buys vs Sells Alerts"
+      >
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="buys-alert" className="text-sm text-muted-foreground">
+              Alert if buys exceed sells by (%)
+            </Label>
+            <Input
+              id="buys-alert"
+              type="number"
+              value={buysThreshold}
+              onChange={(e) => setBuysThreshold(e.target.value)}
+              className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
+            />
+          </div>
+          <div>
+            <Label className="text-sm text-muted-foreground">
+              Alert when net volume flips negative
+            </Label>
+            <div className="mt-2 flex items-center gap-2">
+              <input type="checkbox" id="net-flip" className="rounded" />
+              <label htmlFor="net-flip" className="text-sm">Enable alert</label>
+            </div>
+          </div>
+          <Button className="w-full" onClick={() => setIsEditOpen(false)}>
+            Save Changes
+          </Button>
+        </div>
+      </EditPanel>
 
       {isExpanded && (
         <div className="mb-4">

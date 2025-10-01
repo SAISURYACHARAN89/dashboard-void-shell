@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
-import { TrendingUp, Users } from 'lucide-react';
+import { TrendingUp, Users, Pencil } from 'lucide-react';
 import TimeframeSelector, { Timeframe } from './TimeframeSelector';
+import EditPanel from './EditPanel';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Button } from './ui/button';
 
 interface HoldersGraphCardProps {
   isExpanded?: boolean;
@@ -9,6 +13,8 @@ interface HoldersGraphCardProps {
 
 const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [alertThreshold, setAlertThreshold] = useState('5');
   
   // Sample data for timeline chart
   const timelineData = useMemo(() => {
@@ -41,10 +47,51 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
-      {/* Timeframe Selector */}
-      <div className="absolute top-5 right-5 z-10">
+      {/* Edit Button & Timeframe Selector */}
+      <div className="absolute top-5 right-5 z-10 flex items-center gap-2">
+        <button
+          onClick={() => setIsEditOpen(true)}
+          className="text-[#AAAAAA] hover:text-white transition-colors"
+        >
+          <Pencil className="h-4 w-4" />
+        </button>
         <TimeframeSelector value={timeframe} onChange={setTimeframe} />
       </div>
+
+      <EditPanel
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        title="Edit Holders Alerts"
+      >
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="holder-alert" className="text-sm text-muted-foreground">
+              Alert when holder count changes by (%)
+            </Label>
+            <Input
+              id="holder-alert"
+              type="number"
+              value={alertThreshold}
+              onChange={(e) => setAlertThreshold(e.target.value)}
+              className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
+            />
+          </div>
+          <div>
+            <Label htmlFor="custom-tf" className="text-sm text-muted-foreground">
+              Custom Timeframe Filter
+            </Label>
+            <Input
+              id="custom-tf"
+              type="text"
+              placeholder="e.g., 7d, 30d"
+              className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
+            />
+          </div>
+          <Button className="w-full" onClick={() => setIsEditOpen(false)}>
+            Save Changes
+          </Button>
+        </div>
+      </EditPanel>
 
       <div className={`flex ${isExpanded ? 'flex-col' : 'items-center'} gap-6 h-full`}>
         {/* Holder info */}

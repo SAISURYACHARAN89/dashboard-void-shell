@@ -1,7 +1,12 @@
 import { useMemo, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
-import { Users, UserCheck } from 'lucide-react';
+import { Users, UserCheck, Pencil } from 'lucide-react';
 import TimeframeSelector, { Timeframe } from './TimeframeSelector';
+import EditPanel from './EditPanel';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Button } from './ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface BarGraphSectionProps {
   isExpanded?: boolean;
@@ -10,6 +15,9 @@ interface BarGraphSectionProps {
 const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
   const [hoveredBar, setHoveredBar] = useState<any>(null);
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [barThreshold, setBarThreshold] = useState('1000');
+  const [dataInterval, setDataInterval] = useState('minutes');
 
   // Metrics data
   const memberCount = 1247;
@@ -65,10 +73,54 @@ const BarGraphSection = ({ isExpanded = false }: BarGraphSectionProps) => {
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
-      {/* Timeframe Selector */}
-      <div className="absolute top-6 right-6 z-10">
+      {/* Edit Button & Timeframe Selector */}
+      <div className="absolute top-6 right-6 z-10 flex items-center gap-2">
+        <button
+          onClick={() => setIsEditOpen(true)}
+          className="text-[#AAAAAA] hover:text-white transition-colors"
+        >
+          <Pencil className="h-4 w-4" />
+        </button>
         <TimeframeSelector value={timeframe} onChange={setTimeframe} />
       </div>
+
+      <EditPanel
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        title="Edit Bar Graph Settings"
+      >
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="data-interval" className="text-sm text-muted-foreground">
+              Data Interval
+            </Label>
+            <Select value={dataInterval} onValueChange={setDataInterval}>
+              <SelectTrigger id="data-interval" className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="minutes">Minutes</SelectItem>
+                <SelectItem value="hours">Hours</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="bar-threshold" className="text-sm text-muted-foreground">
+              Alert if bar exceeds value
+            </Label>
+            <Input
+              id="bar-threshold"
+              type="number"
+              value={barThreshold}
+              onChange={(e) => setBarThreshold(e.target.value)}
+              className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
+            />
+          </div>
+          <Button className="w-full" onClick={() => setIsEditOpen(false)}>
+            Save Changes
+          </Button>
+        </div>
+      </EditPanel>
 
       <div className="flex flex-col h-full">
         {/* Title */}

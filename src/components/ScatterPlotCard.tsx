@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { Users2, Users, UserPlus, Crown } from 'lucide-react';
+import { Users2, Users, UserPlus, Crown, Pencil } from 'lucide-react';
 import TimeframeSelector, { Timeframe } from './TimeframeSelector';
+import EditPanel from './EditPanel';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Button } from './ui/button';
 
 interface DataPoint {
   time: string;
@@ -17,6 +21,9 @@ interface ScatterPlotCardProps {
 const ScatterPlotCard = ({ isExpanded = false }: ScatterPlotCardProps) => {
   const [hoveredPoint, setHoveredPoint] = useState<DataPoint | null>(null);
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [followerAlert, setFollowerAlert] = useState('10000');
+  const [minFollowers, setMinFollowers] = useState('1000');
 
   // Follower segment counts
   const miniCount = 324; // <1k followers
@@ -106,10 +113,52 @@ const ScatterPlotCard = ({ isExpanded = false }: ScatterPlotCardProps) => {
         background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
       }}
     >
-      {/* Timeframe Selector */}
-      <div className="absolute top-6 right-6 z-10">
+      {/* Edit Button & Timeframe Selector */}
+      <div className="absolute top-6 right-6 z-10 flex items-center gap-2">
+        <button
+          onClick={() => setIsEditOpen(true)}
+          className="text-[#AAAAAA] hover:text-white transition-colors"
+        >
+          <Pencil className="h-4 w-4" />
+        </button>
         <TimeframeSelector value={timeframe} onChange={setTimeframe} />
       </div>
+
+      <EditPanel
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        title="Edit Scatter Plot Filters"
+      >
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="follower-alert" className="text-sm text-muted-foreground">
+              Alert if author with more than X followers posts
+            </Label>
+            <Input
+              id="follower-alert"
+              type="number"
+              value={followerAlert}
+              onChange={(e) => setFollowerAlert(e.target.value)}
+              className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
+            />
+          </div>
+          <div>
+            <Label htmlFor="min-followers" className="text-sm text-muted-foreground">
+              Filter by minimum follower count
+            </Label>
+            <Input
+              id="min-followers"
+              type="number"
+              value={minFollowers}
+              onChange={(e) => setMinFollowers(e.target.value)}
+              className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
+            />
+          </div>
+          <Button className="w-full" onClick={() => setIsEditOpen(false)}>
+            Save Changes
+          </Button>
+        </div>
+      </EditPanel>
 
       <div className="flex flex-col h-full">
         {/* Title */}
