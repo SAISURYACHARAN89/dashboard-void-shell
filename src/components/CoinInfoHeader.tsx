@@ -109,34 +109,28 @@ const CoinInfoHeader = ({
         </div>
 
         {/* Right Block - Meta Info */}
-        <div className="flex items-start gap-4 sm:gap-6">
+        <div className="flex items-center gap-4 sm:gap-6">
           {/* Age */}
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-muted-foreground" />
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Age</span>
-              <span className="text-sm font-medium text-foreground">{age}</span>
-            </div>
+            <span className="text-sm font-medium text-foreground">{age}</span>
           </div>
 
           {/* Social Type */}
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-muted-foreground">Social</span>
-            {socialLink ? (
-              <a
-                href={socialLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium text-foreground hover:text-accent-foreground px-3 py-1 rounded border border-[hsl(var(--border))] hover:border-[hsl(var(--ring))] transition-colors"
-              >
-                {socialType}
-              </a>
-            ) : (
-              <span className="text-sm font-medium text-foreground px-3 py-1 rounded border border-[hsl(var(--border))]">
-                {socialType}
-              </span>
-            )}
-          </div>
+          {socialLink ? (
+            <a
+              href={socialLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-foreground hover:text-accent-foreground px-3 py-1 rounded border border-[hsl(var(--border))] hover:border-[hsl(var(--ring))] transition-colors"
+            >
+              {socialType}
+            </a>
+          ) : (
+            <span className="text-sm font-medium text-foreground px-3 py-1 rounded border border-[hsl(var(--border))]">
+              {socialType}
+            </span>
+          )}
         </div>
       </div>
     </div>
