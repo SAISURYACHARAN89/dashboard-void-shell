@@ -128,16 +128,10 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
         {/* Timeline Chart */}
         <div className={`${isExpanded ? 'w-full flex-1' : 'w-[45%] h-full'} flex items-center pt-4`}>
           <ResponsiveContainer width="100%" height={isExpanded ? '100%' : '90%'}>
-            <AreaChart 
+            <LineChart 
               data={timelineData}
               margin={{ top: 10, right: 5, left: 5, bottom: -10 }}
             >
-              <defs>
-                <linearGradient id="holderGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#B0B0B0" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#B0B0B0" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
               <XAxis 
                 dataKey="time"
                 stroke="#333333"
@@ -164,16 +158,15 @@ const HoldersGraphCard = ({ isExpanded = false }: HoldersGraphCardProps) => {
                   labelStyle={{ color: '#666666' }}
                 />
               )}
-              <Area 
+              <Line 
                 type="monotone"
                 dataKey="value"
                 stroke="#B0B0B0"
-                strokeWidth={2.5}
-                fill="url(#holderGradient)"
+                strokeWidth={2}
                 dot={isExpanded}
                 animationDuration={300}
               />
-            </AreaChart>
+            </LineChart>
           </ResponsiveContainer>
         </div>
       </div>
