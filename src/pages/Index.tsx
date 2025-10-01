@@ -332,7 +332,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div 
-        className="w-full max-w-[1400px] bg-[hsl(var(--dashboard-container))] border border-[hsl(var(--dashboard-border))] rounded-2xl p-8"
+        className="w-full bg-[hsl(var(--dashboard-container))] border border-[hsl(var(--dashboard-border))] rounded-2xl p-8"
+        style={{ maxWidth: '1600px' }}
       >
         {/* Header with Coin Info and Layout Controls */}
         <div className="mb-6 flex items-center justify-between gap-4">
@@ -426,31 +427,11 @@ const Index = () => {
                     items={layout.leftColumn.filter(item => visibleSections.has(item.id)).map(item => item.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item) => {
-                      if (item.type === 'views') {
-                        const likesItem = layout.leftColumn.find(i => i.type === 'likes' && visibleSections.has(i.id));
-                        if (likesItem) {
-                          return (
-                            <div key="views-likes-grid" className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                              <SortableCard id={item.id}>
-                                {renderCard(item)}
-                              </SortableCard>
-                              <SortableCard id={likesItem.id}>
-                                {renderCard(likesItem)}
-                              </SortableCard>
-                            </div>
-                          );
-                        }
-                      }
-                      if (item.type === 'likes') {
-                        return null;
-                      }
-                      return (
-                        <SortableCard key={item.id} id={item.id}>
-                          {renderCard(item)}
-                        </SortableCard>
-                      );
-                    })}
+                    {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item) => (
+                      <SortableCard key={item.id} id={item.id}>
+                        {renderCard(item)}
+                      </SortableCard>
+                    ))}
                   </SortableContext>
                 </DndContext>
               </div>
@@ -503,27 +484,11 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left Column */}
               <div className="flex flex-col gap-6">
-                {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item) => {
-                  if (item.type === 'views') {
-                    const likesItem = layout.leftColumn.find(i => i.type === 'likes' && visibleSections.has(i.id));
-                    if (likesItem) {
-                      return (
-                        <div key="views-likes-grid" className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                          {renderCard(item)}
-                          {renderCard(likesItem)}
-                        </div>
-                      );
-                    }
-                  }
-                  if (item.type === 'likes') {
-                    return null;
-                  }
-                  return (
-                    <div key={item.id}>
-                      {renderCard(item)}
-                    </div>
-                  );
-                })}
+                {layout.leftColumn.filter(item => visibleSections.has(item.id)).map((item) => (
+                  <div key={item.id}>
+                    {renderCard(item)}
+                  </div>
+                ))}
               </div>
               
               {/* Right Column */}
