@@ -33,24 +33,14 @@ const Index = () => {
           {/* Left Column */}
           <div className="flex flex-col gap-6">
             {/* TradingView Chart */}
-            <ExpandableCard
-              isExpanded={expandedCards.has('trading')}
-              onToggle={() => toggleCard('trading')}
-              expandedHeight="800px"
-              className="h-[600px] lg:h-[484px] group"
-            >
-              <TradingViewCard isExpanded={expandedCards.has('trading')} />
-            </ExpandableCard>
+            <div className="h-[600px] lg:h-[484px]">
+              <TradingViewCard isExpanded={false} />
+            </div>
             
             {/* Horizontal Metrics Bar */}
-            <ExpandableCard
-              isExpanded={expandedCards.has('metrics')}
-              onToggle={() => toggleCard('metrics')}
-              expandedHeight="400px"
-              className="h-[60px] group"
-            >
-              <HorizontalMetricsBar isExpanded={expandedCards.has('metrics')} />
-            </ExpandableCard>
+            <div className="h-[60px]">
+              <HorizontalMetricsBar isExpanded={false} />
+            </div>
 
             {/* Views & Likes Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
