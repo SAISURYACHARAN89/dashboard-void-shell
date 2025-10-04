@@ -41,7 +41,7 @@ const useRealTimeData = () => {
 
   const fetchData = useCallback(async (endpoint: string) => {
     try {
-      const response = await fetch(`http://localhost:5050/api/${endpoint}`);
+      const response = await fetch(`https://kluxback.onrender.com/api/${endpoint}`);
       if (!response.ok) throw new Error(`Failed to fetch ${endpoint}`);
       return await response.json();
     } catch (err) {

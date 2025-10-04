@@ -19,7 +19,7 @@ const PairAddressInput = () => {
   } | null>(null);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
-  const API_BASE = "http://localhost:5050";
+  const API_BASE = "https://kluxback.onrender.com";
 
   // Check if we're already configured on component mount
   useEffect(() => {
