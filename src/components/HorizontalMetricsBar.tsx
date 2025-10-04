@@ -9,31 +9,47 @@ interface Metric {
 }
 
 interface HorizontalMetricsBarProps {
-  isExpanded?: boolean;
+  isExpanded: boolean;
+  data?: {
+    marketCapUSD: number;
+    volumeUSD: number;
+    holders: number;
+    liquidityUSD: number;
+    uniqueAuthors: number;
+    memberCount: number;
+    solPrice: number;
+    lastUpdated: string;
+    bundlersHoldPercent: string;
+    snipersHoldPercent: string;
+    top10HoldersPercent: string;
+    insidersHoldPercent: string;
+    dexPaid: string;
+  };
 }
 
-const HorizontalMetricsBar = ({ isExpanded = false }: HorizontalMetricsBarProps) => {
+const HorizontalMetricsBar = ({ isExpanded = false, data }: HorizontalMetricsBarProps) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const metrics: Metric[] = [
     {
       label: 'BND',
-      value: '187%',
+      // value: `${data?.bundlersHoldPercent || 'N/A'}`,
+      value: `${data?.bundlersHoldPercent ? Number(data.bundlersHoldPercent).toFixed(2) + "%" : 'N/A'}`,
       tooltip: 'BND = Bundle percentage',
     },
     {
       label: 'S',
-      value: '12%',
+      value: `${data?.snipersHoldPercent ? Number(data.snipersHoldPercent).toFixed(2) + "%" : 'N/A'}`,
       tooltip: 'S = Spread percentage',
     },
     {
       label: 'IN',
-      value: '10%',
+      value: `${data?.insidersHoldPercent ? Number(data.insidersHoldPercent).toFixed(2) + "%" : 'N/A'}`,
       tooltip: 'IN = Inflow percentage',
     },
     {
       label: 'DEX',
-      value: 'Paid',
+      value: `${data?.dexPaid ? Number(data.dexPaid) == 1 ? 'Paid' : 'Unpaid' : 'N/A'}`,
       tooltip: 'DEX = Paid status verified',
       isPaid: true,
     },

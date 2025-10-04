@@ -6,17 +6,46 @@ import EditModal from './EditModal';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
+import { format } from 'date-fns'; // ✅ for timestamp formatting
 
 interface MetricCardProps {
   type: 'views' | 'likes';
   value: number;
   percentChange: number;
   chartColor: string;
-  isExpanded?: boolean;
-  isLayoutMode?: boolean;
+  isExpanded: boolean;
+  isLayoutMode: boolean;
+  data?: {
+    current: {
+      views: number;
+      likes: number;
+      retweets: number;
+      replies: number;
+      uniqueAuthors: number;
+      memberCount: number;
+      lastUpdated: string;
+    };
+    history: Array<{
+      timestamp: string;
+      time: string;
+      views: number;
+      likes: number;
+      retweets: number;
+      replies: number;
+      uniqueAuthors: number;
+    }>;
+  };
 }
 
-const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false, isLayoutMode = false }: MetricCardProps) => {
+const MetricCard = ({
+  type,
+  value,
+  percentChange,
+  chartColor,
+  isExpanded = false,
+  isLayoutMode = false,
+  data,
+}: MetricCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -24,35 +53,25 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
   const [viewsThreshold, setViewsThreshold] = useState('10');
   const [likesThreshold, setLikesThreshold] = useState('5');
 
+  // ✅ Build chart data from history with real time labels
   const chartData = useMemo(() => {
-    const data = [];
-    const timeLabels = isExpanded 
-      ? ['1d', '6h', '12h', '18h', '24h', '6h', '12h', '18h', '24h', 'Now']
-      : ['6h', '12h', '18h', '24h', 'Now'];
-    
-    const baseMultiplier = timeframe === '5m' ? 0.6 : timeframe === '15m' ? 0.65 : 0.7;
-    const growthMultiplier = timeframe === '5m' ? 0.02 : timeframe === '15m' ? 0.025 : 0.03;
-    
-    let base = value * baseMultiplier;
-    for (let i = 0; i < timeLabels.length; i++) {
-      base += Math.random() * (value * 0.05) + (value * growthMultiplier);
-      data.push({ 
-        value: Math.round(base),
-        time: timeLabels[i]
-      });
-    }
-    return data;
-  }, [value, isExpanded, timeframe]);
+    if (!data?.history) return [];
+
+    return data.history.map((point) => ({
+      value: type === 'views' ? point.views : point.likes,
+      time: format(new Date(point.timestamp), 'HH:mm'),
+    }));
+  }, [data, type, timeframe]);
 
   const Icon = type === 'views' ? Eye : Heart;
   const label = type === 'views' ? 'Views' : 'Likes';
   const isPositive = percentChange > 0;
 
   return (
-    <div 
+    <div
       className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-5 h-full transition-all duration-300 hover:scale-[1.02] flex flex-col overflow-hidden relative"
       style={{
-        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
+        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -65,7 +84,11 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
               e.stopPropagation();
               setIsEditOpen(true);
             }}
-            className={`transition-colors ${isSaved ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80' : 'text-[#AAAAAA] hover:text-white'}`}
+            className={`transition-colors ${
+              isSaved
+                ? 'text-[#8A2BE2] hover:text-[#8A2BE2]/80'
+                : 'text-[#AAAAAA] hover:text-white'
+            }`}
           >
             <Pencil className="h-4 w-4" />
           </button>
@@ -73,6 +96,7 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
         </div>
       )}
 
+      {/* Edit Modal */}
       <EditModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
@@ -80,19 +104,29 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
       >
         <div className="space-y-4">
           <div>
-            <Label htmlFor="increase-alert" className="text-sm text-muted-foreground">
+            <Label
+              htmlFor="increase-alert"
+              className="text-sm text-muted-foreground"
+            >
               Alert if {type} increase by (%)
             </Label>
             <Input
               id="increase-alert"
               type="number"
               value={type === 'views' ? viewsThreshold : likesThreshold}
-              onChange={(e) => type === 'views' ? setViewsThreshold(e.target.value) : setLikesThreshold(e.target.value)}
+              onChange={(e) =>
+                type === 'views'
+                  ? setViewsThreshold(e.target.value)
+                  : setLikesThreshold(e.target.value)
+              }
               className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
             />
           </div>
           <div>
-            <Label htmlFor="decrease-alert" className="text-sm text-muted-foreground">
+            <Label
+              htmlFor="decrease-alert"
+              className="text-sm text-muted-foreground"
+            >
               Alert if {type} decrease by (%)
             </Label>
             <Input
@@ -102,7 +136,13 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
               className="mt-2 bg-[#1A1F2C] border-[#1E1E1E]"
             />
           </div>
-          <Button className="w-full" onClick={() => { setIsSaved(true); setIsEditOpen(false); }}>
+          <Button
+            className="w-full"
+            onClick={() => {
+              setIsSaved(true);
+              setIsEditOpen(false);
+            }}
+          >
             Save Changes
           </Button>
         </div>
@@ -118,6 +158,7 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
           </p>
         </div>
       )}
+
       <div className="flex flex-col flex-1 min-h-0">
         {/* Top section - Icon and Stats */}
         <div className="flex items-start justify-between mb-4">
@@ -132,10 +173,13 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
                   {label}
                 </span>
               </div>
-              <div 
-                className={`text-sm font-semibold mt-1 ${isPositive ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
+              <div
+                className={`text-sm font-semibold mt-1 ${
+                  isPositive ? 'text-[#2ECC71]' : 'text-[#E74C3C]'
+                }`}
               >
-                {isPositive ? '+' : ''}{percentChange}%
+                {isPositive ? '+' : ''}
+                {percentChange}%
               </div>
             </div>
           </div>
@@ -144,12 +188,12 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
         {/* Bottom section - Mini Chart */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart 
+            <LineChart
               data={chartData}
               margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
               key={timeframe}
             >
-              <XAxis 
+              <XAxis
                 dataKey="time"
                 stroke="#333333"
                 tick={{ fill: '#666666', fontSize: 10 }}
@@ -157,7 +201,7 @@ const MetricCard = ({ type, value, percentChange, chartColor, isExpanded = false
                 axisLine={{ stroke: '#333333' }}
                 tickMargin={6}
               />
-              <Line 
+              <Line
                 type="monotone"
                 dataKey="value"
                 stroke={chartColor}

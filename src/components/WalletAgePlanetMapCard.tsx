@@ -5,27 +5,49 @@ import EditModal from './EditModal';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
-
 interface WalletAgePlanetMapCardProps {
-  isExpanded?: boolean;
-  isLayoutMode?: boolean;
+  isExpanded: boolean;
+  isLayoutMode: boolean;
+  data?: {
+    distribution: Record<string, number>;
+    totalHolders: number;
+    holders: Array<{
+      walletAddress: string;
+      fundedAt: string;
+      ageCategory: string;
+    }>;
+    lastUpdated: string;
+  };
 }
 
+import useRealTimeData from '../hooks/useRealTimeData';
+
 const WalletAgePlanetMapCard = ({ isExpanded = false, isLayoutMode = false }: WalletAgePlanetMapCardProps) => {
+  const { data: realTimeData, isLoading } = useRealTimeData(); // ✅ hook inside component
+
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [newWalletThreshold, setNewWalletThreshold] = useState('15');
   const [oldWalletThreshold, setOldWalletThreshold] = useState('10');
-  
+
   const walletData = useMemo(() => {
-    const multiplier = timeframe === '5m' ? 1 : timeframe === '15m' ? 1.2 : 1.4;
+  const dist = realTimeData?.walletAge?.distribution;
+
+  if (!dist) {
     return {
-      old: { count: Math.round(112 * multiplier), color: '#C97A40', label: 'Old Wallets' },
-      average: { count: Math.round(256 * multiplier), color: '#2E86C1', label: 'Average Wallets' },
-      new: { count: Math.round(89 * multiplier), color: '#F2A7C6', label: 'New Wallets' }
+      old: { count: 0, color: '#C97A40', label: 'Old Wallets' },
+      average: { count: 0, color: '#2E86C1', label: 'Average Wallets' },
+      new: { count: 0, color: '#F2A7C6', label: 'New Wallets' },
     };
-  }, [timeframe]);
+  }
+
+  return {
+    old: { count: dist.old ?? 0, color: '#C97A40', label: 'Old Wallets' },
+    average: { count: dist.adult ?? 0, color: '#2E86C1', label: 'Average Wallets' },
+    new: { count: dist.baby ?? 0, color: '#F2A7C6', label: 'New Wallets' },
+  };
+}, [realTimeData]);
 
   return (
     <div 

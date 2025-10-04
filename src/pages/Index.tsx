@@ -9,6 +9,7 @@ import BarGraphSection from '@/components/BarGraphSection';
 import ScatterPlotCard from '@/components/ScatterPlotCard';
 import ExpandableCard from '@/components/ExpandableCard';
 import CoinInfoHeader from '@/components/CoinInfoHeader';
+import useRealTimeData from '@/hooks/useRealTimeData';
 import {
   DndContext,
   closestCenter,
@@ -26,9 +27,10 @@ import {
 } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Save } from 'lucide-react';
+import { Save, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+
 
 // Define the default layout with columns
 const DEFAULT_LAYOUT = {
@@ -112,6 +114,9 @@ const Index = () => {
   const [isLayoutMode, setIsLayoutMode] = useState(false);
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const { toast } = useToast();
+  
+  // Use real-time data hook
+  const { data, isLoading, error, refetch } = useRealTimeData();
 
   // Load layout from localStorage on mount
   useEffect(() => {
@@ -292,7 +297,13 @@ const Index = () => {
       case 'trading-view':
         return (
           <div className="h-[600px] lg:h-[484px]">
-            <TradingViewCard isExpanded={false} isLayoutMode={isLayoutMode} />
+            
+            <TradingViewCard 
+              isExpanded={false} 
+              isLayoutMode={isLayoutMode}
+              data={data?.marketCap}
+              full={data}
+            />
           </div>
         );
       case 'holders':
@@ -303,19 +314,30 @@ const Index = () => {
             expandedHeight="600px"
             className="h-40 group"
           >
-            <HoldersGraphCard isExpanded={!isLayoutMode && expandedCards.has('holders')} isLayoutMode={isLayoutMode} />
+            <HoldersGraphCard 
+              isExpanded={!isLayoutMode && expandedCards.has('holders')} 
+              isLayoutMode={isLayoutMode}
+              data={data?.holders}
+            />
           </ExpandableCard>
         );
       case 'metrics-bar':
         return (
           <div className="h-[60px]">
-            <HorizontalMetricsBar isExpanded={false} />
+            <HorizontalMetricsBar 
+              isExpanded={false} 
+              data={data?.stats}
+            />
           </div>
         );
       case 'buys-sells':
         return (
           <div className="h-[300px]">
-            <BuysVsSellsCard isExpanded={false} isLayoutMode={isLayoutMode} />
+            <BuysVsSellsCard 
+              isExpanded={false} 
+              isLayoutMode={isLayoutMode}
+              data={data?.buysSells}
+            />
           </div>
         );
       case 'views':
@@ -329,11 +351,12 @@ const Index = () => {
             >
               <MetricCard 
                 type="views"
-                value={240}
+                value={data?.social?.current?.views || 0}
                 percentChange={18}
                 chartColor="#B0B0B0"
                 isExpanded={!isLayoutMode && expandedCards.has('views')}
                 isLayoutMode={isLayoutMode}
+                data={data?.social}
               />
             </ExpandableCard>
           </div>
@@ -346,7 +369,11 @@ const Index = () => {
             expandedHeight="600px"
             className="h-[300px] group"
           >
-            <WalletAgePlanetMapCard isExpanded={!isLayoutMode && expandedCards.has('wallet-age')} isLayoutMode={isLayoutMode} />
+            <WalletAgePlanetMapCard 
+              isExpanded={!isLayoutMode && expandedCards.has('wallet-age')} 
+              isLayoutMode={isLayoutMode}
+              data={data?.walletAge}
+            />
           </ExpandableCard>
         );
       case 'likes':
@@ -360,11 +387,12 @@ const Index = () => {
             >
               <MetricCard 
                 type="likes"
-                value={65}
+                value={data?.social?.current?.likes || 0}
                 percentChange={10}
                 chartColor="#B0B0B0"
                 isExpanded={!isLayoutMode && expandedCards.has('likes')}
                 isLayoutMode={isLayoutMode}
+                data={data?.social}
               />
             </ExpandableCard>
           </div>
@@ -377,7 +405,11 @@ const Index = () => {
             expandedHeight="700px"
             className="h-[320px] group"
           >
-            <BarGraphSection isExpanded={!isLayoutMode && expandedCards.has('bar-graph')} isLayoutMode={isLayoutMode} />
+            <BarGraphSection 
+              isExpanded={!isLayoutMode && expandedCards.has('bar-graph')} 
+              isLayoutMode={isLayoutMode}
+              data={data}
+            />
           </ExpandableCard>
         );
       case 'scatter':
@@ -388,13 +420,85 @@ const Index = () => {
             expandedHeight="700px"
             className="h-[320px] group"
           >
-            <ScatterPlotCard isExpanded={!isLayoutMode && expandedCards.has('scatter')} isLayoutMode={isLayoutMode} />
+            <ScatterPlotCard 
+              isExpanded={!isLayoutMode && expandedCards.has('scatter')} 
+              isLayoutMode={isLayoutMode}
+              data={data?.data}
+            />
           </ExpandableCard>
         );
       default:
         return null;
     }
   };
+
+  // Add refresh button to header
+  const HeaderControls = () => (
+    <div className="flex items-center gap-2">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={refetch}
+        disabled={isLoading}
+      >
+        <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+        Refresh
+      </Button>
+      
+      {!isLayoutMode ? (
+        <>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={startLayoutMode}
+          >
+            Create Layout
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={resetLayout}
+            className="hidden sm:flex"
+          >
+            Reset Layout
+          </Button>
+        </>
+      ) : (
+        <Button
+          size="sm"
+          onClick={saveLayout}
+          className="gap-2"
+        >
+          <Save className="h-4 w-4" />
+          Save Layout
+        </Button>
+      )}
+    </div>
+  );
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading dashboard data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-destructive mb-4">Error loading data</p>
+          <Button onClick={refetch}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 lg:p-8">
@@ -404,37 +508,13 @@ const Index = () => {
       >
         {/* Header with Coin Info and Layout Controls */}
         <div className="mb-6 flex items-center justify-between gap-4">
-          <CoinInfoHeader />
-          <div className="flex items-center gap-2">
-            {!isLayoutMode ? (
-              <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={startLayoutMode}
-                >
-                  Create Layout
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={resetLayout}
-                  className="hidden sm:flex"
-                >
-                  Reset Layout
-                </Button>
-              </>
-            ) : (
-              <Button
-                size="sm"
-                onClick={saveLayout}
-                className="gap-2"
-              >
-                <Save className="h-4 w-4" />
-                Save Layout
-              </Button>
-            )}
-          </div>
+          <CoinInfoHeader tokenInfo={data?.tokeninfo} />
+          <HeaderControls />
+        </div>
+
+        {/* Last updated indicator */}
+        <div className="text-xs text-muted-foreground mb-4 text-right">
+          Last updated: {data?.lastUpdate ? new Date(data.lastUpdate).toLocaleTimeString() : 'Never'}
         </div>
 
         {isLayoutMode ? (

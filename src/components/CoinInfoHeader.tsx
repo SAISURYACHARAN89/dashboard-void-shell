@@ -8,75 +8,76 @@ import {
 } from '@/components/ui/tooltip';
 
 interface CoinInfoHeaderProps {
-  coinName?: string;
-  contractAddress?: string;
-  logoUrl?: string;
-  createdAt?: Date;
-  socialType?: string;
-  socialLink?: string;
+  tokenInfo?: {
+    tokenAddress?: string;
+    tokenName?: string;
+    tokenTicker?: string;
+    twitter?: string;
+    tokenimage?: string;
+    createdAt?: string;
+  };
 }
 
-const CoinInfoHeader = ({
-  coinName = "PEPE",
-  contractAddress = "0xA4F8C3C9E5D6B7A8F9E0D1C2B3A4F5E6D7C8B9A0",
-  logoUrl = "/placeholder.svg",
-  createdAt = new Date(Date.now() - 25 * 60 * 1000), // 25 minutes ago
-  socialType = "X Community",
-  socialLink = "https://x.com"
-}: CoinInfoHeaderProps) => {
+const CoinInfoHeader = ({ tokenInfo }: CoinInfoHeaderProps) => {
+  const coinName = tokenInfo?.tokenName || "Unknown Coin";
+  const contractAddress = tokenInfo?.tokenAddress || "0x0000...0000";
+  const logoUrl = tokenInfo?.tokenimage || "/placeholder.svg"; // backend doesn’t send, so fallback
+  const createdAt = new Date(tokenInfo?.createdAt || Date.now()); // backend doesn’t send, so just “now”
+  const socialType = "Twitter";
+  const socialLink = tokenInfo?.twitter || "";
+
   const [copied, setCopied] = useState(false);
   const [age, setAge] = useState("");
 
-  const calculateAge = () => {
-    const now = new Date();
-    const diff = now.getTime() - createdAt.getTime();
-    const minutes = Math.floor(diff / (1000 * 60));
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) return `${days}d`;
-    if (hours > 0) return `${hours}h`;
-    return `${minutes}m`;
-  };
-
   useEffect(() => {
-    setAge(calculateAge());
-    const interval = setInterval(() => {
-      setAge(calculateAge());
-    }, 60000); // Update every minute
-
+    const updateAge = () => {
+      const now = new Date();
+      const diffInSeconds = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
+      if (diffInSeconds < 60) {
+        setAge(`${diffInSeconds} seconds ago`);
+      } else if (diffInSeconds < 3600) {
+        const minutes = Math.floor(diffInSeconds / 60);
+        setAge(`${minutes} minute${minutes !== 1 ? 's' : ''} ago`);
+      } else if (diffInSeconds < 86400) {
+        const hours = Math.floor(diffInSeconds / 3600);
+        setAge(`${hours} hour${hours !== 1 ? 's' : ''} ago`);
+      } else {
+        const days = Math.floor(diffInSeconds / 86400);
+        setAge(`${days} day${days !== 1 ? 's' : ''} ago`);
+      }
+    }
+    updateAge();
+    const interval = setInterval(updateAge, 60000);
     return () => clearInterval(interval);
   }, [createdAt]);
+  
 
+ 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(contractAddress);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 
-  const truncateAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
+  const truncateAddress = (address: string) =>
+    `${address.slice(0, 6)}...${address.slice(-4)}`;
 
   return (
     <div className="w-full bg-gradient-to-r from-[hsl(0,0%,5%)] to-[hsl(0,0%,7%)] border border-[hsl(var(--dashboard-border))] rounded-xl px-6 py-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        {/* Left Block - Identity */}
+        {/* Left Block */}
         <div className="flex items-center gap-4">
-          {/* Logo Box */}
           <div className="w-12 h-12 rounded-lg bg-[hsl(0,0%,11%)] border border-[hsl(var(--border))] flex items-center justify-center overflow-hidden flex-shrink-0">
-            <img 
-              src={logoUrl} 
+            <img
+              src={logoUrl}
               alt={coinName}
               className="w-full h-full object-contain"
             />
           </div>
-
-          {/* Coin Info */}
           <div className="flex flex-col gap-1">
             <h1 className="text-xl sm:text-2xl font-bold text-foreground">
               {coinName}
@@ -108,15 +109,12 @@ const CoinInfoHeader = ({
           </div>
         </div>
 
-        {/* Right Block - Meta Info */}
+        {/* Right Block */}
         <div className="flex items-center gap-4 sm:gap-6">
-          {/* Age */}
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm font-medium text-foreground">{age}</span>
           </div>
-
-          {/* Social Type */}
           {socialLink ? (
             <a
               href={socialLink}
@@ -136,5 +134,6 @@ const CoinInfoHeader = ({
     </div>
   );
 };
+
 
 export default CoinInfoHeader;

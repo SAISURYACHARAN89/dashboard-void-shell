@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { Users, UserCheck, Pencil } from 'lucide-react';
 import TimeframeSelector, { Timeframe } from './TimeframeSelector';
@@ -7,13 +7,23 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import dayjs from 'dayjs';
 
 interface BarGraphSectionProps {
-  isExpanded?: boolean;
-  isLayoutMode?: boolean;
+  isExpanded: boolean;
+  isLayoutMode: boolean;
+  data?: {
+    marketCap?: any;
+    holders?: any;
+    buysSells?: any;
+    social?: any;
+    walletAge?: any;
+    metrics?: any;
+    lastUpdate?: string;
+  };
 }
 
-const BarGraphSection = ({ isExpanded = false, isLayoutMode = false }: BarGraphSectionProps) => {
+const BarGraphSection = ({ isExpanded = false, isLayoutMode = false, data }: BarGraphSectionProps) => {
   const [hoveredBar, setHoveredBar] = useState<any>(null);
   const [timeframe, setTimeframe] = useState<Timeframe>('5m');
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -22,30 +32,45 @@ const BarGraphSection = ({ isExpanded = false, isLayoutMode = false }: BarGraphS
   const [dataInterval, setDataInterval] = useState('minutes');
 
   // Metrics data
-  const memberCount = 1247;
-  const memberChangePercent = 12.5;
-  const uniqueAuthorsCount = 89;
-  const uniqueAuthorsChangePercent = -3.2;
+  const memberCount = data?.metrics?.memberCount ?? 0;
+  const uniqueAuthorsCount = data?.metrics?.uniqueAuthors ?? 0;
 
-  const chartData = useMemo(() => {
-    const timeLabels = isExpanded
-      ? ['8:00', '8:30', '9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30', '10:45', '11:00', '11:30']
-      : ['9:00', '9:15', '9:30', '9:45', '10:00', '10:15', '10:30'];
-    
-    const currentBase = timeframe === '5m' ? 30 : timeframe === '15m' ? 40 : 50;
-    const previousBase = timeframe === '5m' ? 25 : timeframe === '15m' ? 35 : 45;
-    
-    return timeLabels.map((time) => ({
-      time,
-      current: Math.floor(Math.random() * 40 + currentBase),
-      previous: Math.floor(Math.random() * 35 + previousBase),
-    }));
-  }, [isExpanded, timeframe]);
+  const memberChangePercent = data?.metrics?.memberChangePercent ?? 0;
+  const uniqueAuthorsChangePercent = data?.metrics?.uniqueAuthorsChangePercent ?? 0;
+
+  // ✅ Chart data state to keep series history
+  const [chartData, setChartData] = useState<any[]>([]);
+
+  useEffect(() => {
+  if (!data?.metrics?.lastUpdated) return;
+
+  const newPoint = {
+    time: dayjs(data.metrics.lastUpdated).format('HH:mm:ss'),
+    memberCount: Number(memberCount),
+    uniqueAuthors: Number(uniqueAuthorsCount),
+  };
+
+  setChartData((prev) => {
+    // If last point exists and values are identical, skip adding
+    const last = prev[prev.length - 1];
+    if (last &&
+        last.memberCount === newPoint.memberCount &&
+        last.uniqueAuthors === newPoint.uniqueAuthors
+    ) return prev;
+
+    const updated = [...prev, newPoint];
+
+    // Optional: keep only last 20 points
+    if (updated.length > 20) updated.shift();
+
+    return updated;
+  });
+}, [data?.metrics?.lastUpdated, memberCount, uniqueAuthorsCount]);
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div 
+        <div
           className="px-3 py-2 rounded-lg border border-[hsl(var(--dashboard-border))]"
           style={{ background: 'rgba(0, 0, 0, 0.9)' }}
         >
@@ -55,11 +80,11 @@ const BarGraphSection = ({ isExpanded = false, isLayoutMode = false }: BarGraphS
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full" style={{ background: '#FFFFFF' }} />
-              <span className="text-white text-xs">Current: {payload[0].value}</span>
+              <span className="text-white text-xs">Members: {payload[0].value}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full" style={{ background: '#808080' }} />
-              <span className="text-white text-xs">Previous: {payload[1].value}</span>
+              <span className="text-white text-xs">Unique authors: {payload[1].value}</span>
             </div>
           </div>
         </div>
@@ -69,13 +94,12 @@ const BarGraphSection = ({ isExpanded = false, isLayoutMode = false }: BarGraphS
   };
 
   return (
-    <div 
+    <div
       className="border border-[hsl(var(--dashboard-border))] rounded-2xl p-6 h-full transition-all duration-300 hover:scale-[1.01] relative"
       style={{
-        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)'
+        background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)',
       }}
     >
-      {/* Edit Button & Timeframe Selector */}
       {!isLayoutMode && (
         <div className="absolute top-6 right-6 z-10 flex items-center gap-2">
           <button
@@ -131,69 +155,41 @@ const BarGraphSection = ({ isExpanded = false, isLayoutMode = false }: BarGraphS
       </EditModal>
 
       <div className="flex flex-col h-full">
-        {/* Title */}
         <div className="mb-2">
           <h3 className="text-foreground text-base font-semibold">Members vs Unique Authors</h3>
           <p className="text-muted-foreground text-xs mt-0.5">
-            {isExpanded ? 'Extended historical comparison with detailed refresh data' : 'Current vs Previous Refresh'}
+            {isExpanded ? 'Extended historical comparison with detailed refresh data' : 'Time series of refreshes'}
           </p>
         </div>
 
-        {/* Chart */}
         <div className="flex-1 min-h-0 -mx-2">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart 
+            <BarChart
               data={chartData}
               margin={{ top: 30, right: 25, bottom: 5, left: 25 }}
               barGap={-10}
             >
-              <XAxis 
+              <XAxis
                 dataKey="time"
                 stroke="#666666"
                 tick={{ fill: '#666666', fontSize: 11 }}
                 tickLine={{ stroke: '#333333' }}
                 axisLine={{ stroke: '#333333' }}
               />
-              <YAxis 
+              <YAxis
                 stroke="#666666"
                 tick={{ fill: '#666666', fontSize: 11 }}
                 tickLine={{ stroke: '#333333' }}
                 axisLine={{ stroke: '#333333' }}
-                domain={[0, 80]}
               />
               <Tooltip content={<CustomTooltip />} cursor={false} />
-              
-              {/* Previous refresh bars (semi-transparent) */}
-              <Bar 
-                dataKey="previous"
-                fill="#808080"
-                opacity={0.5}
-                radius={[4, 4, 0, 0]}
-                onMouseEnter={(data) => setHoveredBar(data)}
-                onMouseLeave={() => setHoveredBar(null)}
-              />
-              
-              {/* Current refresh bars (opaque) */}
-              <Bar 
-                dataKey="current"
-                fill="#FFFFFF"
-                radius={[4, 4, 0, 0]}
-                label={{
-                  position: 'top',
-                  fill: '#FFFFFF',
-                  fontSize: 11,
-                  fontWeight: 'bold',
-                }}
-                onMouseEnter={(data) => setHoveredBar(data)}
-                onMouseLeave={() => setHoveredBar(null)}
-              />
+              <Bar dataKey="memberCount" fill="#ffffff" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="uniqueAuthors" fill="#808080" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Bottom Metrics Section */}
         <div className="grid grid-cols-2 gap-4 mt-2 pt-3 border-t border-[hsl(var(--dashboard-border))]">
-          {/* Members */}
           <div className="flex items-center gap-3">
             <Users className="w-5 h-5 text-muted-foreground" />
             <div>
@@ -201,19 +197,14 @@ const BarGraphSection = ({ isExpanded = false, isLayoutMode = false }: BarGraphS
                 <span className="text-xl font-bold text-foreground">
                   {memberCount.toLocaleString()}
                 </span>
-                <span className="text-xs font-medium text-muted-foreground">
-                  Members
-                </span>
+                <span className="text-xs font-medium text-muted-foreground">Members</span>
               </div>
-              <div 
-                className={`text-sm font-semibold ${memberChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
-              >
+              <div className={`text-sm font-semibold ${memberChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}>
                 {memberChangePercent > 0 ? '+' : ''}{memberChangePercent}%
               </div>
             </div>
           </div>
 
-          {/* Unique Authors */}
           <div className="flex items-center gap-3">
             <UserCheck className="w-5 h-5 text-muted-foreground" />
             <div>
@@ -221,13 +212,9 @@ const BarGraphSection = ({ isExpanded = false, isLayoutMode = false }: BarGraphS
                 <span className="text-xl font-bold text-foreground">
                   {uniqueAuthorsCount.toLocaleString()}
                 </span>
-                <span className="text-xs font-medium text-muted-foreground">
-                  Unique Authors
-                </span>
+                <span className="text-xs font-medium text-muted-foreground">Unique Authors</span>
               </div>
-              <div 
-                className={`text-sm font-semibold ${uniqueAuthorsChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}
-              >
+              <div className={`text-sm font-semibold ${uniqueAuthorsChangePercent > 0 ? 'text-[#2ECC71]' : 'text-[#E74C3C]'}`}>
                 {uniqueAuthorsChangePercent > 0 ? '+' : ''}{uniqueAuthorsChangePercent}%
               </div>
             </div>
