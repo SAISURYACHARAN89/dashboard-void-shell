@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-export type Timeframe = '5m' | '15m' | '1h';
+export type Timeframe = '5m' | '15m' | '1h' | '∞';
 
 interface TimeframeSelectorProps {
   value: Timeframe;
@@ -10,7 +10,7 @@ interface TimeframeSelectorProps {
 
 const TimeframeSelector = ({ value, onChange }: TimeframeSelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const timeframes: Timeframe[] = ['5m', '15m', '1h'];
+  const timeframes: Timeframe[] = ['5m', '15m', '1h', '∞'];
 
   return (
     <div className="relative" onClick={(e) => e.stopPropagation()}>

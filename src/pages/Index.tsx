@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import TradingViewCard from '@/components/TradingViewCard';
 import HoldersGraphCard from '@/components/HoldersGraphCard';
-import BuysVsSellsCard from '@/components/BuysVsSellsCard';
 import WalletAgePlanetMapCard from '@/components/WalletAgePlanetMapCard';
 import HorizontalMetricsBar from '@/components/HorizontalMetricsBar';
 import MetricCard from '@/components/MetricCard';
@@ -31,7 +30,6 @@ import { Save, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
-
 // Define the default layout with columns
 const DEFAULT_LAYOUT = {
   leftColumn: [
@@ -42,7 +40,6 @@ const DEFAULT_LAYOUT = {
   ],
   rightColumn: [
     { id: 'holders', type: 'holders' },
-    { id: 'buys-sells', type: 'buys-sells' },
     { id: 'wallet-age', type: 'wallet-age' },
   ],
   bottomRow: [
@@ -113,6 +110,8 @@ const Index = () => {
   const [layout, setLayout] = useState(DEFAULT_LAYOUT);
   const [isLayoutMode, setIsLayoutMode] = useState(false);
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+  const [dataSource, setDataSource] = useState<'community' | 'ca'>('community');
+  const [socialType, setSocialType] = useState<string>('X Community');
   const { toast } = useToast();
   
   // Use real-time data hook
@@ -293,11 +292,14 @@ const Index = () => {
   };
 
   const renderCard = (item: typeof DEFAULT_LAYOUT.leftColumn[0]) => {
+    const isTweet = socialType === 'Tweet' && dataSource === 'community';
+    const isAccount = socialType === 'Account' && dataSource === 'community';
+    
     switch (item.type) {
+      // Main Chart
       case 'trading-view':
         return (
           <div className="h-[600px] lg:h-[484px]">
-            
             <TradingViewCard 
               isExpanded={false} 
               isLayoutMode={isLayoutMode}
@@ -306,40 +308,29 @@ const Index = () => {
             />
           </div>
         );
-      case 'holders':
-        return (
-          <ExpandableCard
-            isExpanded={!isLayoutMode && expandedCards.has('holders')}
-            onToggle={() => !isLayoutMode && toggleCard('holders')}
-            expandedHeight="600px"
-            className="h-40 group"
-          >
-            <HoldersGraphCard 
-              isExpanded={!isLayoutMode && expandedCards.has('holders')} 
-              isLayoutMode={isLayoutMode}
-              data={data?.holders}
-            />
-          </ExpandableCard>
-        );
+
+      // Key Metrics
       case 'metrics-bar':
         return (
-          <div className="h-[60px]">
+          <div className="h-[50px]">
             <HorizontalMetricsBar 
-              isExpanded={false} 
+              isLayoutMode={isLayoutMode}
               data={data?.stats}
             />
           </div>
         );
-      case 'buys-sells':
+
+      case 'holders':
         return (
           <div className="h-[300px]">
-            <BuysVsSellsCard 
-              isExpanded={false} 
+            <HoldersGraphCard
               isLayoutMode={isLayoutMode}
-              data={data?.buysSells}
+              data={data?.holders}
             />
           </div>
         );
+
+      // Social Metrics Cards
       case 'views':
         return (
           <div className="w-full">
@@ -361,21 +352,7 @@ const Index = () => {
             </ExpandableCard>
           </div>
         );
-      case 'wallet-age':
-        return (
-          <ExpandableCard
-            isExpanded={!isLayoutMode && expandedCards.has('wallet-age')}
-            onToggle={() => !isLayoutMode && toggleCard('wallet-age')}
-            expandedHeight="600px"
-            className="h-[300px] group"
-          >
-            <WalletAgePlanetMapCard 
-              isExpanded={!isLayoutMode && expandedCards.has('wallet-age')} 
-              isLayoutMode={isLayoutMode}
-              data={data?.walletAge}
-            />
-          </ExpandableCard>
-        );
+
       case 'likes':
         return (
           <div className="w-full">
@@ -397,6 +374,24 @@ const Index = () => {
             </ExpandableCard>
           </div>
         );
+
+      // Analysis Charts
+      case 'wallet-age':
+        return (
+          <ExpandableCard
+            isExpanded={!isLayoutMode && expandedCards.has('wallet-age')}
+            onToggle={() => !isLayoutMode && toggleCard('wallet-age')}
+            expandedHeight="600px"
+            className="h-[300px] group"
+          >
+            <WalletAgePlanetMapCard 
+              isExpanded={!isLayoutMode && expandedCards.has('wallet-age')} 
+              isLayoutMode={isLayoutMode}
+              data={data?.walletAge}
+            />
+          </ExpandableCard>
+        );
+
       case 'bar-graph':
         return (
           <ExpandableCard
@@ -408,12 +403,25 @@ const Index = () => {
             <BarGraphSection 
               isExpanded={!isLayoutMode && expandedCards.has('bar-graph')} 
               isLayoutMode={isLayoutMode}
-              data={data}
+              data={data}  // Pass the full data object
+              social={data?.social}  // Pass social data separately
+              showMembers={dataSource === 'community'}
+              socialType={socialType}
+              dataSource={dataSource}
             />
           </ExpandableCard>
         );
+
       case 'scatter':
-        return (
+        return isTweet ? (
+          <ScatterPlotCard 
+            isExpanded={false} 
+            isLayoutMode={isLayoutMode} 
+            socialType={socialType} 
+            dataSource={dataSource}
+            data={data?.data}
+          />
+        ) : (
           <ExpandableCard
             isExpanded={!isLayoutMode && expandedCards.has('scatter')}
             onToggle={() => !isLayoutMode && toggleCard('scatter')}
@@ -423,10 +431,13 @@ const Index = () => {
             <ScatterPlotCard 
               isExpanded={!isLayoutMode && expandedCards.has('scatter')} 
               isLayoutMode={isLayoutMode}
+              socialType={socialType}
+              dataSource={dataSource}
               data={data?.data}
             />
           </ExpandableCard>
         );
+
       default:
         return null;
     }
@@ -508,7 +519,11 @@ const Index = () => {
       >
         {/* Header with Coin Info and Layout Controls */}
         <div className="mb-6 flex items-center justify-between gap-4">
-          <CoinInfoHeader tokenInfo={data?.tokeninfo} />
+          <CoinInfoHeader 
+            tokenInfo={data?.tokeninfo} 
+            onDataSourceChange={setDataSource} 
+            onSocialTypeChange={setSocialType} 
+          />
           <HeaderControls />
         </div>
 
