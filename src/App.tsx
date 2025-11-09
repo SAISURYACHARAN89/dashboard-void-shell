@@ -48,7 +48,7 @@ const App = () => (
             <Route
               path="/"
               element={
-                isExtension ? <CompactDashboard /> : <PairAddressInput />
+                isExtension ? <CompactDashboard /> : <Index />
               }
             />
 
